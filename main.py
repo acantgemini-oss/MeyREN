@@ -69,7 +69,20 @@ SESSION_TTL = 60 * 60 * 24 * 7
 def hash_password(pw: str) -> str:
     return hashlib.sha256(f"{pw}{CONFIG['secret']}".encode()).hexdigest()
 
-AUTH = {"password_hash": hash_password(os.environ.get("ADMIN_PASSWORD", "admin"))}
+def get_admin_password_hash():
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute("SELECT value FROM settings WHERE key='password_hash'")
+    result = c.fetchone()
+    conn.close()
+    return result[0] if result else ""
+
+def update_admin_password_hash(new_hash: str):
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute("UPDATE settings SET value=? WHERE key='password_hash'", (new_hash,))
+    conn.commit()
+    conn.close()
 SESSIONS: dict = {}
 SESSIONS_LOCK = asyncio.Lock()
 
@@ -193,7 +206,7 @@ async def health():
 async def api_login(request: Request):
     body = await request.json()
     password = str(body.get("password") or "")
-    if hash_password(password) != AUTH["password_hash"]:
+    if hash_password(password) != get_admin_password_hash():
         raise HTTPException(status_code=401, detail="Invalid password")
     token = await create_session()
     resp = JSONResponse({"ok": True})
@@ -218,11 +231,12 @@ async def api_change_password(request: Request, _=Depends(require_auth)):
     body = await request.json()
     current = str(body.get("current_password") or "")
     new = str(body.get("new_password") or "")
-    if hash_password(current) != AUTH["password_hash"]:
+    if hash_password(current) != get_admin_password_hash():
         raise HTTPException(status_code=400, detail="Current password is incorrect")
     if len(new) < 4:
         raise HTTPException(status_code=400, detail="Password must be at least 4 characters")
-    AUTH["password_hash"] = hash_password(new)
+    
+    update_admin_password_hash(hash_password(new))
     current_token = request.cookies.get(SESSION_COOKIE)
     async with SESSIONS_LOCK:
         SESSIONS.clear()
