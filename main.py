@@ -48,9 +48,6 @@ error_logs: deque = deque(maxlen=50)
 hourly_traffic: dict = defaultdict(int)
 http_client: httpx.AsyncClient | None = None
 
-LINKS: dict = {}
-LINKS_LOCK = asyncio.Lock()
-
 def hash_password(pw: str) -> str:
     return hashlib.sha256(f"{pw}{CONFIG['secret']}".encode()).hexdigest()
 
@@ -81,10 +78,10 @@ async def shutdown():
         await http_client.aclose()
 
 async def ensure_default_link():
-    async with LINKS_LOCK:
-        if not LINKS:
-            uid = utils.generate_uuid(CONFIG["secret"], "default")
-            LINKS[uid] = {"label": "Default", "limit_bytes": 0, "used_bytes": 0, "created_at": datetime.now().isoformat(), "active": True}
+    links = db.get_links()
+    if not links:
+        uid = utils.generate_uuid(CONFIG["secret"], "default")
+        db.add_link(uid, "Default", 0, 0, True, datetime.now().isoformat())
 
 async def close_connections_for_link(uid: str):
     to_close = [cid for cid, info in connections.items() if info.get("uuid") == uid]
@@ -147,6 +144,7 @@ async def api_change_password(request: Request, _=Depends(auth.require_auth)):
 
 @app.get("/stats")
 async def get_stats(_=Depends(auth.require_auth)):
+    all_links = db.get_links()
     return {
         "active_connections": len(connections),
         "total_traffic_mb": round(stats["total_bytes"] / (1024 * 1024), 2),
@@ -155,7 +153,7 @@ async def get_stats(_=Depends(auth.require_auth)):
         "uptime": utils.uptime(stats["start_time"]),
         "timestamp": datetime.now().isoformat(),
         "recent_errors": list(error_logs)[-10:],
-        "links_count": len(LINKS),
+        "links_count": len(all_links),
         "domain": utils.get_domain(),
         "cpu_percent": psutil.cpu_percent(interval=0.1),
         "memory_percent": psutil.virtual_memory().percent,
@@ -170,58 +168,56 @@ async def create_link(request: Request, _=Depends(auth.require_auth)):
     limit_unit = body.get("limit_unit") or "GB"
     limit_bytes = 0 if limit_value <= 0 else utils.parse_size_to_bytes(limit_value, limit_unit)
     uid = utils.generate_uuid(CONFIG["secret"], label)
-    async with LINKS_LOCK:
-        LINKS[uid] = {"label": label, "limit_bytes": limit_bytes, "used_bytes": 0, "created_at": datetime.now().isoformat(), "active": True}
-    return {"uuid": uid, "label": label, "limit_bytes": limit_bytes, "used_bytes": 0, "active": True, "created_at": LINKS[uid]["created_at"], "vless_link": utils.generate_vless_link(uid, utils.get_domain(), remark=f"MeyREN-{label}")}
+    created_at = datetime.now().isoformat()
+    
+    db.add_link(uid, label, limit_bytes, 0, True, created_at)
+    
+    return {"uuid": uid, "label": label, "limit_bytes": limit_bytes, "used_bytes": 0, "active": True, "created_at": created_at, "vless_link": utils.generate_vless_link(uid, utils.get_domain(), remark=f"MeyREN-{label}")}
 
 @app.get("/api/links")
 async def list_links(_=Depends(auth.require_auth)):
+    all_links = db.get_links()
     result = []
-    async with LINKS_LOCK:
-        for uid, data in LINKS.items():
-            result.append({"uuid": uid, "label": data["label"], "limit_bytes": data["limit_bytes"], "used_bytes": data["used_bytes"], "active": data["active"], "created_at": data["created_at"], "vless_link": utils.generate_vless_link(uid, utils.get_domain(), remark=f"MeyREN-{data['label']}")})
+    for data in all_links:
+        data["active"] = bool(data["active"]) 
+        data["vless_link"] = utils.generate_vless_link(data["uuid"], utils.get_domain(), remark=f"MeyREN-{data['label']}")
+        result.append(data)
+    
     result.sort(key=lambda x: x["created_at"], reverse=True)
     return {"links": result}
 
 @app.patch("/api/links/{uid}")
 async def toggle_link(uid: str, request: Request, _=Depends(auth.require_auth)):
     body = await request.json()
-    async with LINKS_LOCK:
-        if uid not in LINKS:
-            raise HTTPException(status_code=404, detail="link not found")
-        if "active" in body:
-            LINKS[uid]["active"] = bool(body["active"])
-        if "limit_value" in body:
-            limit_value = float(body.get("limit_value") or 0)
-            limit_unit = body.get("limit_unit") or "GB"
-            LINKS[uid]["limit_bytes"] = 0 if limit_value <= 0 else utils.parse_size_to_bytes(limit_value, limit_unit)
-        if "reset_usage" in body and body["reset_usage"]:
-            LINKS[uid]["used_bytes"] = 0
-        if "label" in body:
-            LINKS[uid]["label"] = str(body["label"])[:60]
+    if not db.get_link(uid):
+        raise HTTPException(status_code=404, detail="link not found")
+        
+    db.update_link(
+        uuid=uid,
+        active=body.get("active"),
+        limit_bytes=utils.parse_size_to_bytes(float(body.get("limit_value", 0)), body.get("limit_unit", "GB")) if "limit_value" in body else None,
+        reset_usage=body.get("reset_usage", False),
+        label=str(body["label"])[:60] if "label" in body else None
+    )
     return {"ok": True}
 
 @app.delete("/api/links/{uid}")
 async def delete_link(uid: str, _=Depends(auth.require_auth)):
-    async with LINKS_LOCK:
-        LINKS.pop(uid, None)
+    db.delete_link(uid)
     await close_connections_for_link(uid)
     return {"ok": True}
 
 RELAY_BUF = 64 * 1024
 
 async def check_quota(uid: str, extra_bytes: int) -> bool:
-    async with LINKS_LOCK:
-        link = LINKS.get(uid)
-        if link is None: return False
-        if not link["active"]: return False
-        if link["limit_bytes"] == 0: return True
-        return (link["used_bytes"] + extra_bytes) <= link["limit_bytes"]
+    link = db.get_link(uid)
+    if link is None: return False
+    if not link["active"]: return False
+    if link["limit_bytes"] == 0: return True
+    return (link["used_bytes"] + extra_bytes) <= link["limit_bytes"]
 
 async def add_usage(uid: str, n: int):
-    async with LINKS_LOCK:
-        if uid in LINKS:
-            LINKS[uid]["used_bytes"] += n
+    db.add_usage(uid, n)
 
 async def ws_to_tcp(websocket: WebSocket, writer: asyncio.StreamWriter, conn_id: str, link_uid: str):
     try:
