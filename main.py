@@ -63,77 +63,6 @@ async def keep_alive():
         except Exception:
             pass
 
-async def telegram_bot_polling():
-    token = os.environ.get("TELEGRAM_BOT_TOKEN")
-    if not token or token == "your_bot_token_here":
-        logger.info("Telegram bot token not configured. Bot is disabled.")
-        return
-
-    url = f"https://api.telegram.org/bot{token}"
-    offset = None
-    
-    await asyncio.sleep(5)
-
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        while True:
-            try:
-                req_url = f"{url}/getUpdates?timeout=20"
-                if offset:
-                    req_url += f"&offset={offset}"
-                
-                response = await client.get(req_url)
-                if response.status_code != 200:
-                    await asyncio.sleep(5)
-                    continue
-
-                data = response.json()
-                if not data.get("ok"):
-                    await asyncio.sleep(5)
-                    continue
-
-                for result in data.get("result", []):
-                    offset = result["update_id"] + 1
-                    message = result.get("message", {})
-                    chat_id = message.get("chat", {}).get("id")
-                    text = message.get("text", "")
-
-                    if chat_id and text:
-                        if text.startswith("/start"):
-                            await client.post(f"{url}/sendMessage", json={
-                                "chat_id": chat_id,
-                                "text": "سلام! لینک VLESS خود را بفرستید تا حجم باقی‌مانده را به شما بگویم."
-                            })
-                        else:
-                            uuid = utils.extract_uuid_from_link(text)
-                            if not uuid:
-                                await client.post(f"{url}/sendMessage", json={
-                                    "chat_id": chat_id,
-                                    "text": "لینک نامعتبر است. لطفاً یک لینک VLESS صحیح ارسال کنید."
-                                })
-                                continue
-                            
-                            link_data = db.get_link(uuid)
-                            if not link_data:
-                                await client.post(f"{url}/sendMessage", json={
-                                    "chat_id": chat_id,
-                                    "text": "این لینک در سیستم یافت نشد یا حذف شده است."
-                                })
-                                continue
-
-                            reply_text = utils.format_bot_reply(
-                                label=link_data["label"],
-                                used=link_data["used_bytes"],
-                                limit=link_data["limit_bytes"],
-                                active=bool(link_data["active"])
-                            )
-                            await client.post(f"{url}/sendMessage", json={
-                                "chat_id": chat_id,
-                                "text": reply_text
-                            })
-            except Exception as e:
-                logger.error(f"Telegram Bot Error: {e}")
-                await asyncio.sleep(5)
-
 @app.on_event("startup")
 async def startup():
     global http_client
@@ -142,7 +71,6 @@ async def startup():
     http_client = httpx.AsyncClient(limits=limits, timeout=timeout, follow_redirects=True)
     logger.info(f"MeyREN started on port {CONFIG['port']}")
     asyncio.create_task(keep_alive())
-    asyncio.create_task(telegram_bot_polling())
 
 @app.on_event("shutdown")
 async def shutdown():

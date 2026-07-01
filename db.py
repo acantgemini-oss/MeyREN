@@ -12,7 +12,10 @@ def init_db(secret_key: str):
     
     c.execute("SELECT value FROM settings WHERE key='password_hash'")
     if not c.fetchone():
-        default_hash = hashlib.sha256(f"{os.environ.get('ADMIN_PASSWORD', 'admin')}{secret_key}".encode()).hexdigest()
+        admin_pw = os.environ.get('ADMIN_PASSWORD')
+        if not admin_pw:
+            raise ValueError("ADMIN_PASSWORD environment variable is required and must not be hardcoded.")
+        default_hash = hashlib.sha256(f"{admin_pw}{secret_key}".encode()).hexdigest()
         c.execute("INSERT INTO settings (key, value) VALUES ('password_hash', ?)", (default_hash,))
         
     conn.commit()
