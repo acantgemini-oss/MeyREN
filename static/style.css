@@ -48,12 +48,13 @@ body[dir="rtl"]{direction:rtl;text-align:right}
 .card-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--text);letter-spacing:-0.01em}
 
 .btn{font-family:inherit;font-size:12px;font-weight:600;border-radius:10px;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border:none;transition:all .15s}
+.btn:active{transform:translateY(0) scale(0.96)}
 .btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{filter:brightness(1.1)}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 6px 16px var(--primary-glow)}
 .btn-secondary{background:var(--surface3);color:var(--text2);border:1px solid var(--border);position:relative;overflow:hidden}
-.btn-secondary:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px);box-shadow:0 2px 8px var(--primary-glow)}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px);box-shadow:0 4px 12px var(--primary-glow)}
 .btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,0.12)}
-.btn-danger:hover{background:rgba(255,77,106,0.15)}
+.btn-danger:hover{background:var(--red-dim);color:var(--red);transform:translateY(-1px);box-shadow:0 4px 12px var(--red-dim)}
 .btn-sm{padding:5px 10px;font-size:11px}
 
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
@@ -76,8 +77,8 @@ body[dir="rtl"]{direction:rtl;text-align:right}
 .usage-pill .fill{height:100%;border-radius:2px;transition:width .3s}
 .usage-pill .limit{color:var(--text3)}
 
-.toggle{width:34px;height:18px;border-radius:10px;background:var(--surface3);position:relative;cursor:pointer;transition:all .2s;border:1px solid var(--border)}
-.toggle::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:var(--text3);top:2px;left:2px;transition:all .2s}
+.toggle{width:36px;height:20px;border-radius:10px;background:var(--surface3);position:relative;cursor:pointer;transition:all .3s cubic-bezier(0.4,0,0.2,1);border:1px solid var(--border);box-shadow:inset 0 1px 3px rgba(0,0,0,0.1)}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:var(--text2);top:2px;left:2px;transition:all .3s cubic-bezier(0.4,0,0.2,1);box-shadow:0 2px 4px rgba(0,0,0,0.2)}
 .toggle.on{background:var(--green);border-color:var(--green)}
 .toggle.on::after{left:18px;background:#fff}
 
@@ -100,13 +101,13 @@ body[dir="rtl"]{direction:rtl;text-align:right}
 .empty{text-align:center;padding:40px 16px;color:var(--text3)}
 .empty-icon{font-size:32px;margin-bottom:10px;opacity:0.3}
 
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-size:12px;font-weight:500;opacity:0;transition:all .25s;z-index:999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(30px) scale(0.95);background:rgba(24,24,27,0.85);color:#fff;border:1px solid var(--border2);border-radius:12px;padding:12px 24px;font-size:13px;font-weight:600;opacity:0;transition:all .3s cubic-bezier(0.34,1.56,0.64,1);z-index:999;display:flex;align-items:center;gap:8px;box-shadow:0 12px 32px rgba(0,0,0,0.4);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
 .toast.error{border-color:var(--red-dim);color:var(--red)}
 
 .modal-dialog {border:none;background:transparent;padding:0;margin:auto;width:100%;max-width:460px;outline:none;}
-.modal-dialog::backdrop {background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);}
-.modal-content {background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:100%;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.modal-dialog::backdrop {background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.modal-content {background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:28px;width:100%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.5);}
 .modal-dialog[open] .modal-content {animation: modalIn .3s cubic-bezier(0.34,1.56,0.64,1) forwards;}
 @keyframes modalIn { from {transform:scale(0.9);opacity:0;} to {transform:scale(1);opacity:1;} }
 .modal-title{font-size:15px;font-weight:700;margin-bottom:18px;color:var(--text)}
