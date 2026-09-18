@@ -69,12 +69,6 @@ body {
   line-height: 1.5;
 }
 
-body.en {
-  direction: ltr;
-  text-align: left;
-  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -110,13 +104,6 @@ body.en {
   backdrop-filter: var(--glass);
 }
 
-body.en .sidebar {
-  right: auto;
-  left: 0;
-  border-left: none;
-  border-right: 1px solid var(--card-b);
-}
-
 .sidebar.collapsed {
   width: var(--sb-c);
 }
@@ -141,11 +128,6 @@ body.en .sidebar {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
-body.en .sb-toggle {
-  left: auto;
-  right: -13px;
-}
-
 .sb-toggle:hover {
   background: var(--hover);
   border-color: var(--accent2);
@@ -159,14 +141,6 @@ body.en .sb-toggle {
 }
 
 .sidebar.collapsed .sb-toggle svg {
-  transform: rotate(180deg);
-}
-
-body.en .sidebar.collapsed .sb-toggle svg {
-  transform: rotate(0deg);
-}
-
-body.en .sidebar:not(.collapsed) .sb-toggle svg {
   transform: rotate(180deg);
 }
 
@@ -303,10 +277,6 @@ body.en .sidebar:not(.collapsed) .sb-toggle svg {
   box-shadow: inset -3px 0 0 var(--accent);
 }
 
-body.en .nav-item.on {
-  box-shadow: inset 3px 0 0 var(--accent);
-}
-
 .sidebar.collapsed .nav-item {
   justify-content: center;
   align-items: center;
@@ -396,18 +366,8 @@ body.en .nav-item.on {
   transition: margin 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body.en .main {
-  margin-right: 0;
-  margin-left: var(--sb);
-}
-
 .main.expanded {
   margin-right: var(--sb-c);
-}
-
-body.en .main.expanded {
-  margin-right: 0;
-  margin-left: var(--sb-c);
 }
 
 .page {
@@ -1281,10 +1241,6 @@ html, body {
     z-index: 105;
   }
 
-  body.en .sidebar {
-    transform: translateX(-100%);
-  }
-
   .sidebar.open {
     transform: translateX(0);
     visibility: visible;
@@ -1469,11 +1425,6 @@ html, body {
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-right: 4px;
-  }
-
-  body.en .td-name {
-    padding-right: 0;
-    padding-left: 4px;
   }
 
   .td-name span {

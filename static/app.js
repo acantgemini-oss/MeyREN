@@ -1,190 +1,108 @@
 // ============================================================
 // MeyREN Gateway Dashboard Client Application
-// Adapted with Multi-Protocol Generator & Purple UI Engine
+// Native Persian RTL Interface
 // ============================================================
 
 const I18N = {
-  fa: {
-    sec_panel: 'پنل',
-    sec_sys: 'سیستم',
-    nav_dash: 'داشبورد',
-    nav_configs: 'کانفیگ‌ها',
-    nav_groups: 'گروه‌ها',
-    nav_create: 'ساخت کانفیگ',
-    nav_stats: 'آمار',
-    nav_logs: 'لاگ فعالیت',
-    nav_settings: 'تنظیمات',
-    nav_support: 'پشتیبانی',
-    nav_donate: 'حمایت مالی',
-    nav_news: 'اخبار',
-    nav_admins: 'ادمین‌ها',
-    nav_telegram: 'ربات تلگرام',
-    tg_sub: 'توکن ربات و آیدی عددی ادمین · فعال‌سازی خودکار و وب‌هوک',
-    tg_config: 'پیکربندی ربات',
-    tg_token: 'توکن ربات (BotFather)',
-    tg_admin: 'آیدی عددی ادمین',
-    tg_webhook: 'فعال‌سازی Webhook خودکار',
-    tg_activate: 'ذخیره و فعال‌سازی ربات',
-    tg_help: 'راهنمای اتصال',
-    tg_h1: 'از @BotFather در تلگرام یک ربات بسازید و توکن آن را کپی کنید.',
-    tg_h2: 'آیدی عددی تلگرام خود را از @userinfobot بگیرید و وارد کنید.',
-    tg_h3: 'روی ذخیره و فعال‌سازی کلیک کنید — سیستم وب‌هوک را تنظیم می‌کند.',
-    logout: 'خروج',
-    loading: 'در حال بارگذاری...',
-    m_conns: 'اتصالات فعال',
-    m_traffic: 'ترافیک کل',
-    m_links: 'کانفیگ‌ها',
-    m_uptime: 'آپتایم سرور',
-    quick_create: 'ساخت کانفیگ',
-    quick_create_desc: 'ساخت دستی با پروتکل‌های متنوع، محدودیت ترافیک، سرعت و انقضا',
-    auto_create: 'ساخت خودکار (پیشنهادی)',
-    auto_create_desc: 'ساخت سریع با تنظیمات بهینه · لینک VLESS و سابسکریپشن هوشمند',
-    configs_sub: 'مدیریت لینک‌ها · VLESS و ساب',
-    th_name: 'نام',
-    th_proto: 'پروتکل',
-    th_status: 'وضعیت',
-    th_usage: 'مصرف',
-    th_ops: 'عملیات',
-    manual_create: 'ساخت کانفیگ',
-    label_name: 'نام کانفیگ',
-    label_proto: 'پروتکل',
-    label_limit: 'محدودیت حجم',
-    label_unit: 'واحد',
-    label_days: 'انقضا (روز)',
-    label_ip: 'محدودیت IP',
-    label_speed: 'سرعت (Mbps)',
-    btn_create: 'ساخت',
-    btn_auto: 'ساخت خودکار',
-    stats_sub: 'ترافیک و اتصالات · فیلتر زمانی',
-    r_day: 'روز',
-    r_week: 'هفته',
-    r_month: 'ماه',
-    r_all: 'کل',
-    lang_label: 'زبان سیستم',
-    change_pw: 'تغییر رمز عبور',
-    pw_cur: 'رمز فعلی',
-    pw_new: 'رمز جدید',
-    pw_cf: 'تکرار رمز',
-    btn_save: 'ذخیره تغییرات',
-    github: 'گیت‌هاب پروژه',
-    telegram: 'کانال تلگرام',
-    theme: 'تم',
-    theme_dark: 'تم تیره',
-    theme_light: 'تم روشن',
-    created_title: 'کانفیگ با موفقیت ساخته شد',
-    copy_sub: 'کپی لینک ساب',
-    sub_label: 'سابسکریپشن هوشمند',
-    refresh_stats: 'بروزرسانی آمار',
-    refresh_panel: 'بروزرسانی پنل',
-  },
-  en: {
-    sec_panel: 'PANEL',
-    sec_sys: 'SYSTEM',
-    nav_dash: 'Dashboard',
-    nav_configs: 'Configs',
-    nav_groups: 'Groups',
-    nav_create: 'Create Config',
-    nav_stats: 'Statistics',
-    nav_logs: 'Activity Log',
-    nav_settings: 'Settings',
-    nav_support: 'Support',
-    nav_donate: 'Donate',
-    nav_news: 'News',
-    nav_admins: 'Admins',
-    nav_telegram: 'Telegram Bot',
-    tg_sub: 'Bot token & admin numeric ID · Auto webhook',
-    tg_config: 'Bot Configuration',
-    tg_token: 'Bot token (BotFather)',
-    tg_admin: 'Admin numeric ID',
-    tg_webhook: 'Enable automatic webhook',
-    tg_activate: 'Save and activate bot',
-    tg_help: 'Setup Guide',
-    tg_h1: 'Create a bot with @BotFather in Telegram and copy the token.',
-    tg_h2: 'Get your numeric ID from @userinfobot.',
-    tg_h3: 'Click Save — webhook will be registered automatically.',
-    logout: 'Logout',
-    loading: 'Loading...',
-    m_conns: 'Active Connections',
-    m_traffic: 'Total Traffic',
-    m_links: 'Configs',
-    m_uptime: 'Server Uptime',
-    quick_create: 'Create Config',
-    quick_create_desc: 'Manual create with multi-protocols, traffic and speed limits',
-    auto_create: 'Auto Create (Suggested)',
-    auto_create_desc: 'Quick optimal creation · VLESS and Smart Subscription',
-    configs_sub: 'Manage links · Multi-Protocol and Sub',
-    th_name: 'Name',
-    th_proto: 'Protocol',
-    th_status: 'Status',
-    th_usage: 'Usage',
-    th_ops: 'Actions',
-    manual_create: 'Create Config',
-    label_name: 'Config Name',
-    label_proto: 'Protocol',
-    label_limit: 'Traffic Limit',
-    label_unit: 'Unit',
-    label_days: 'Expiry (Days)',
-    label_ip: 'IP Limit',
-    label_speed: 'Speed (Mbps)',
-    btn_create: 'Create',
-    btn_auto: 'Auto Create',
-    stats_sub: 'Traffic & connections · Time filter',
-    r_day: 'Day',
-    r_week: 'Week',
-    r_month: 'Month',
-    r_all: 'All',
-    lang_label: 'System Language',
-    change_pw: 'Change Password',
-    pw_cur: 'Current Password',
-    pw_new: 'New Password',
-    pw_cf: 'Confirm Password',
-    btn_save: 'Save Changes',
-    github: 'GitHub Repo',
-    telegram: 'Telegram Channel',
-    theme: 'Theme',
-    theme_dark: 'Dark Theme',
-    theme_light: 'Light Theme',
-    created_title: 'Config Created Successfully',
-    copy_sub: 'Copy Subscription',
-    sub_label: 'Smart Subscription',
-    refresh_stats: 'Refresh Stats',
-    refresh_panel: 'Update Panel',
-  }
+  sec_panel: 'پنل',
+  sec_sys: 'سیستم',
+  nav_dash: 'داشبورد',
+  nav_configs: 'کانفیگ‌ها',
+  nav_groups: 'گروه‌ها',
+  nav_create: 'ساخت کانفیگ',
+  nav_stats: 'آمار',
+  nav_logs: 'لاگ فعالیت',
+  nav_settings: 'تنظیمات',
+  nav_support: 'پشتیبانی',
+  nav_donate: 'حمایت مالی',
+  nav_news: 'اخبار',
+  nav_admins: 'ادمین‌ها',
+  nav_telegram: 'ربات تلگرام',
+  tg_sub: 'توکن ربات و آیدی عددی ادمین · فعال‌سازی خودکار و وب‌هوک',
+  tg_config: 'پیکربندی ربات',
+  tg_token: 'توکن ربات (BotFather)',
+  tg_admin: 'آیدی عددی ادمین',
+  tg_webhook: 'فعال‌سازی Webhook خودکار',
+  tg_activate: 'ذخیره و فعال‌سازی ربات',
+  tg_help: 'راهنمای اتصال',
+  tg_h1: 'از @BotFather در تلگرام یک ربات بسازید و توکن آن را کپی کنید.',
+  tg_h2: 'آیدی عددی تلگرام خود را از @userinfobot بگیرید و وارد کنید.',
+  tg_h3: 'روی ذخیره و فعال‌سازی کلیک کنید — سیستم وب‌هوک را تنظیم می‌کند.',
+  logout: 'خروج',
+  loading: 'در حال بارگذاری...',
+  m_conns: 'اتصالات فعال',
+  m_traffic: 'ترافیک کل',
+  m_links: 'کانفیگ‌ها',
+  m_uptime: 'آپتایم سرور',
+  quick_create: 'ساخت کانفیگ',
+  quick_create_desc: 'ساخت دستی با پروتکل‌های متنوع، محدودیت ترافیک، سرعت و انقضا',
+  auto_create: 'ساخت خودکار (پیشنهادی)',
+  auto_create_desc: 'ساخت سریع با تنظیمات بهینه · لینک VLESS و سابسکریپشن هوشمند',
+  configs_sub: 'مدیریت لینک‌ها · VLESS و ساب',
+  th_name: 'نام',
+  th_proto: 'پروتکل',
+  th_status: 'وضعیت',
+  th_usage: 'مصرف',
+  th_ops: 'عملیات',
+  manual_create: 'ساخت کانفیگ',
+  label_name: 'نام کانفیگ',
+  label_proto: 'پروتکل',
+  label_limit: 'محدودیت حجم',
+  label_unit: 'واحد',
+  label_days: 'انقضا (روز)',
+  label_ip: 'محدودیت IP',
+  label_speed: 'سرعت (Mbps)',
+  btn_create: 'ساخت',
+  btn_auto: 'ساخت خودکار',
+  stats_sub: 'ترافیک و اتصالات · فیلتر زمانی',
+  r_day: 'روز',
+  r_week: 'هفته',
+  r_month: 'ماه',
+  r_all: 'کل',
+  lang_label: 'زبان سیستم',
+  change_pw: 'تغییر رمز عبور',
+  pw_cur: 'رمز فعلی',
+  pw_new: 'رمز جدید',
+  pw_cf: 'تکرار رمز',
+  btn_save: 'ذخیره تغییرات',
+  github: 'گیت‌هاب پروژه',
+  telegram: 'کانال تلگرام',
+  theme: 'تم ظاهری',
+  theme_dark: 'تم تیره',
+  theme_light: 'تم روشن',
+  created_title: 'کانفیگ با موفقیت ساخته شد',
+  copy_sub: 'کپی لینک ساب',
+  sub_label: 'سابسکریپشن هوشمند',
+  refresh_stats: 'بروزرسانی آمار',
+  refresh_panel: 'بروزرسانی پنل',
 };
 
-let lang = localStorage.getItem('meyren_lang') || 'fa';
 let statRange = 'month';
 let __allLinks = [];
 let trafficChartInst = null;
 
 function t(k) {
-  return (I18N[lang] || I18N.fa)[k] || k;
+  return I18N[k] || k;
 }
 
 function applyLang() {
-  const root = document.getElementById('htmlRoot');
-  root.lang = lang;
-  root.dir = lang === 'fa' ? 'rtl' : 'ltr';
-  document.body.classList.toggle('en', lang === 'en');
+  const root = document.getElementById('htmlRoot') || document.documentElement;
+  root.lang = 'fa';
+  root.dir = 'rtl';
+  document.body.dir = 'rtl';
+  document.body.classList.remove('en');
   
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.getAttribute('data-i18n');
-    if (I18N[lang] && I18N[lang][k]) {
-      el.textContent = I18N[lang][k];
+    if (I18N[k]) {
+      el.textContent = I18N[k];
     }
   });
 
   const tl = document.getElementById('themeLabel');
   if (tl) {
-    tl.textContent = document.documentElement.classList.contains('light') ? t('theme_dark') : t('theme_light');
+    tl.textContent = document.documentElement.classList.contains('light') ? 'تم تیره' : 'تم روشن';
   }
-}
-
-function setLang(l) {
-  lang = l;
-  localStorage.setItem('meyren_lang', l);
-  applyLang();
-  toast(l === 'fa' ? 'زبان به فارسی تغییر یافت' : 'Language set to English');
 }
 
 // Theme
@@ -292,7 +210,7 @@ async function copyText(text) {
   if (!text || text === '—') return;
   try {
     await navigator.clipboard.writeText(text);
-    toast(lang === 'fa' ? 'با موفقیت کپی شد ✓' : 'Copied to clipboard ✓');
+    toast('با موفقیت کپی شد ✓');
   } catch (e) {
     const input = document.createElement('textarea');
     input.value = text;
@@ -300,7 +218,7 @@ async function copyText(text) {
     input.select();
     document.execCommand('copy');
     document.body.removeChild(input);
-    toast(lang === 'fa' ? 'با موفقیت کپی شد ✓' : 'Copied to clipboard ✓');
+    toast('با موفقیت کپی شد ✓');
   }
 }
 
@@ -323,12 +241,12 @@ async function api(url, opts = {}) {
       data = { ok: r.ok };
     }
     if (!r.ok) {
-      toast(data.detail || data.error || (lang === 'fa' ? 'خطا در عملیات' : 'Operation error'));
+      toast(data.detail || data.error || 'خطا در انجام عملیات');
       return null;
     }
     return data;
   } catch (e) {
-    toast(lang === 'fa' ? 'خطای ارتباط با سرور' : 'Server connection failed');
+    toast('خطای ارتباط با سرور');
     return null;
   }
 }
@@ -382,7 +300,7 @@ async function refreshAll() {
 
   const lastUpd = document.getElementById('lastUpd');
   if (lastUpd) {
-    lastUpd.textContent = (lang === 'fa' ? 'بروزرسانی: ' : 'Updated: ') + new Date().toLocaleTimeString(lang === 'fa' ? 'fa-IR' : 'en-US');
+    lastUpd.textContent = 'بروزرسانی: ' + new Date().toLocaleTimeString('fa-IR');
   }
 
   // Active connections
@@ -411,9 +329,7 @@ async function refreshAll() {
 
   const panelInfo = document.getElementById('panelInfo');
   if (panelInfo) {
-    panelInfo.innerHTML = lang === 'fa'
-      ? `کل کانفیگ‌ها: <b>${arr.length}</b> · فعال: <b>${activeCount}</b> · مصرف کل: <b>${fmtB(usedBytes)}</b> · بازه: <b>${statRange}</b>`
-      : `Total: <b>${arr.length}</b> · Active: <b>${activeCount}</b> · Total Usage: <b>${fmtB(usedBytes)}</b> · Range: <b>${statRange}</b>`;
+    panelInfo.innerHTML = `کل کانفیگ‌ها: <b>${arr.length}</b> · فعال: <b>${activeCount}</b> · مصرف کل: <b>${fmtB(usedBytes)}</b> · بازه: <b>${statRange}</b>`;
   }
 
   // Update Chart
@@ -430,7 +346,7 @@ function renderLinksTable(arr) {
   if (!tb) return;
 
   if (!arr.length) {
-    tb.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--t3);padding:36px">${lang === 'fa' ? 'هیچ کانفیگی ساخته نشده است.' : 'No configs created yet.'}</td></tr>`;
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--t3);padding:36px">هیچ کانفیگی ساخته نشده است.</td></tr>';
     return;
   }
 
@@ -529,7 +445,7 @@ function updateBulkBar() {
 
   if (selected.length > 0) {
     bulkBar.style.display = 'flex';
-    bulkCount.textContent = lang === 'fa' ? `${selected.length} کانفیگ انتخاب شده` : `${selected.length} configs selected`;
+    bulkCount.textContent = `${selected.length} کانفیگ انتخاب شده`;
   } else {
     bulkBar.style.display = 'none';
   }
@@ -540,7 +456,7 @@ async function bulkAction(action) {
   if (!selected.length) return;
 
   if (action === 'delete') {
-    const cf = confirm(lang === 'fa' ? `آیا از حذف ${selected.length} کانفیگ انتخاب شده مطمئن هستید؟` : `Delete ${selected.length} selected configs?`);
+    const cf = confirm(`آیا از حذف ${selected.length} کانفیگ انتخاب شده مطمئن هستید؟`);
     if (!cf) return;
   }
 
@@ -551,7 +467,7 @@ async function bulkAction(action) {
   });
 
   if (res && res.ok) {
-    toast(lang === 'fa' ? 'عملیات گروهی انجام شد' : 'Bulk operation complete');
+    toast('عملیات گروهی با موفقیت انجام شد ✓');
     refreshAll();
   }
 }
@@ -564,12 +480,12 @@ async function toggleLinkActive(uid, active) {
     body: JSON.stringify({ active })
   });
   if (res && res.ok) {
-    toast(active ? (lang === 'fa' ? 'کانفیگ فعال شد' : 'Config enabled') : (lang === 'fa' ? 'کانفیگ غیرفعال شد' : 'Config disabled'));
+    toast(active ? 'کانفیگ فعال شد ✓' : 'کانفیگ غیرفعال شد');
   }
 }
 
 async function resetLinkUsage(uid) {
-  const cf = confirm(lang === 'fa' ? 'ترافیک مصرفی این کانفیگ صفر شود؟' : 'Reset traffic for this config?');
+  const cf = confirm('ترافیک مصرفی این کانفیگ صفر شود؟');
   if (!cf) return;
   const res = await api(`/api/links/${uid}`, {
     method: 'PATCH',
@@ -577,17 +493,17 @@ async function resetLinkUsage(uid) {
     body: JSON.stringify({ reset_usage: true })
   });
   if (res && res.ok) {
-    toast(lang === 'fa' ? 'مصرف ترافیک صفر شد' : 'Traffic reset to 0');
+    toast('مصرف ترافیک صفر شد ✓');
     refreshAll();
   }
 }
 
 async function deleteLink(uid) {
-  const cf = confirm(lang === 'fa' ? 'آیا از حذف این کانفیگ اطمینان دارید؟' : 'Are you sure you want to delete this config?');
+  const cf = confirm('آیا از حذف این کانفیگ اطمینان دارید؟');
   if (!cf) return;
   const res = await api(`/api/links/${uid}`, { method: 'DELETE' });
   if (res && res.ok) {
-    toast(lang === 'fa' ? 'کانفیگ حذف شد' : 'Config deleted');
+    toast('کانفیگ با موفقیت حذف شد');
     refreshAll();
   }
 }
@@ -1032,7 +948,7 @@ function renderTrafficChart(hourlyMap) {
     data: {
       labels: labels,
       datasets: [{
-        label: lang === 'fa' ? 'ترافیک (مگابایت)' : 'Traffic (MB)',
+        label: 'ترافیک (مگابایت)',
         data: values,
         borderColor: '#a855f7',
         backgroundColor: gradient,

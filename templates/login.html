@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" data-theme="dark">
+<html lang="fa" dir="rtl" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -232,10 +232,9 @@ body[dir="rtl"] .toolbar{right:auto;left:max(16px, env(safe-area-inset-left, 0px
 }
 </style>
 </head>
-<body>
+<body dir="rtl">
 <div class="toolbar">
-  <button id="lang-toggle" onclick="cycleLang()" title="Language">FA</button>
-  <button id="theme-toggle" onclick="toggleTheme()" title="Theme">
+  <button id="theme-toggle" onclick="toggleTheme()" title="تغییر تم" aria-label="تغییر تم">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
   </button>
 </div>
@@ -244,52 +243,58 @@ body[dir="rtl"] .toolbar{right:auto;left:max(16px, env(safe-area-inset-left, 0px
     <div class="brand">
       <img src="/static/logo.png?v=3.1" alt="MeyREN Logo" class="brand-logo" width="76" height="76" style="width:76px;height:76px;max-width:76px;max-height:76px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none'">
       <h1>MeyREN</h1>
-      <p>Secure VLESS Gateway</p>
+      <p>درگاه امن مدیریت شبکه</p>
     </div>
     <div class="error-msg" id="err-box"></div>
     <form id="login-form">
       <input type="text" name="username" value="admin" autocomplete="username" style="display:none;" tabindex="-1" aria-hidden="true">
       <div class="form-group">
-        <label data-en="Password" data-fa="رمز عبور">Password</label>
-        <input type="password" id="password" autocomplete="current-password" placeholder="Enter password" data-placeholder-en="Enter password" data-placeholder-fa="رمز عبور را وارد کنید" autofocus required>
+        <label>رمز عبور</label>
+        <input type="password" id="password" autocomplete="current-password" placeholder="رمز عبور را وارد کنید" autofocus required>
       </div>
-      <button type="submit" class="login-btn" id="btn-submit" data-en="Sign In" data-fa="ورود">Sign In</button>
+      <button type="submit" class="login-btn" id="btn-submit">ورود به پنل</button>
     </form>
   </div>
 </div>
 <script>
-let lang=localStorage.getItem('ren_lang')||'fa';
-let theme=localStorage.getItem('ren_theme')||'dark';
-function setLang(l){
-  lang=l;
-  document.body.dir=l==='fa'?'rtl':'ltr';
-  document.querySelectorAll('[data-en]').forEach(el=>{const v=el.getAttribute('data-'+l);if(v)el.textContent=v});
-  document.querySelectorAll('[data-placeholder-en]').forEach(el=>{const p=el.getAttribute('data-placeholder-'+l);if(p)el.placeholder=p});
-  document.getElementById('lang-toggle').textContent=l.toUpperCase();
-  localStorage.setItem('ren_lang',l);
+let theme = localStorage.getItem('ren_theme') || 'dark';
+function applyTheme(t) {
+  theme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('ren_theme', t);
 }
-function cycleLang(){setLang(lang==='en'?'fa':'en')}
-function applyTheme(t){theme=t;document.documentElement.setAttribute('data-theme',t);localStorage.setItem('ren_theme',t)}
-function toggleTheme(){applyTheme(theme==='dark'?'light':'dark')}
-applyTheme(theme);setLang(lang);
-document.getElementById('login-form').addEventListener('submit',async e=>{
-  e.preventDefault();const err=document.getElementById('err-box');err.classList.remove('show');
-  const btn=document.getElementById('btn-submit');
-  btn.disabled=true;btn.textContent=(lang==='fa'?'در حال ورود...':'Signing in...');
-  try{
-    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('password').value})});
-    if(!r.ok){
-      const d=await r.json().catch(()=>({}));
-      let msg = d.detail || 'Failed';
-      if (msg === 'Invalid password') {
-        msg = lang === 'fa' ? 'رمز عبور نادرست است' : 'Invalid password';
+function toggleTheme() {
+  applyTheme(theme === 'dark' ? 'light' : 'dark');
+}
+applyTheme(theme);
+
+document.getElementById('login-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = document.getElementById('err-box');
+  err.classList.remove('show');
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'در حال ورود...';
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: document.getElementById('password').value })
+    });
+    if (!r.ok) {
+      const d = await r.json().catch(() => ({}));
+      let msg = d.detail || 'خطا در ورود';
+      if (msg === 'Invalid password' || msg === 'Invalid username or password') {
+        msg = 'رمز عبور نادرست است';
       }
       throw new Error(msg);
     }
-    location.href='/dashboard';
-  }catch(e){
-    err.textContent=e.message;err.classList.add('show');
-    btn.disabled=false;btn.textContent=(lang==='fa'?'ورود':'Sign In');
+    location.href = '/dashboard';
+  } catch (e) {
+    err.textContent = e.message;
+    err.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'ورود به پنل';
   }
 });
 </script>
