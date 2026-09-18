@@ -1126,45 +1126,563 @@ input:checked + .slider:before {
 }
 
 /* ============================================================
-   RESPONSIVE BREAKPOINTS
+   RESPONSIVE MOBILE-FIRST DESIGN SYSTEM
+   Optimized for 320px, 360px, 375px, 390px, 414px, 430px, 480px, 768px
    ============================================================ */
 
+/* Base containment preventing horizontal drift */
+html, body {
+  overflow-x: clip;
+  max-width: 100vw;
+}
+
+/* Mobile Bottom Navigation Bar */
+.mob-nav-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(62px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgba(11, 17, 36, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--card-b);
+  z-index: 85;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.mob-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  color: var(--t3);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 6px 10px;
+  min-width: 52px;
+  transition: color 0.18s, transform 0.18s;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mob-nav-btn svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.18s, color 0.18s;
+}
+
+.mob-nav-btn.on {
+  color: var(--accent-light);
+}
+
+.mob-nav-btn.on svg {
+  transform: scale(1.1);
+  color: var(--accent-light);
+}
+
+.mob-nav-btn.on::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  width: 14px;
+  height: 2.5px;
+  background: var(--accent);
+  border-radius: 99px;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.mob-nav-btn.create-btn {
+  position: relative;
+}
+
+.create-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 16px var(--accent-glow);
+  margin-top: -16px;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+}
+
+.mob-nav-btn.create-btn:hover .create-circle,
+.mob-nav-btn.create-btn:active .create-circle {
+  transform: scale(1.08);
+  box-shadow: 0 6px 22px rgba(37, 99, 235, 0.6);
+}
+
+/* Page Head Actions */
+.page-head-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.page-head-actions input {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--card-b);
+  background: var(--input-bg);
+  color: var(--t1);
+  font-family: inherit;
+  font-size: 13px;
+  min-width: 150px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.page-head-actions input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.22);
+  outline: none;
+}
+
+.sb-close-btn {
+  display: none;
+}
+
+/* ------------------------------------------------------------
+   1. TABLETS & LARGE MOBILE (<= 900px)
+   ------------------------------------------------------------ */
 @media (max-width: 900px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
   .mob-hdr {
     display: flex;
+    width: 100%;
+    padding-top: max(14px, env(safe-area-inset-top, 0px));
   }
+
   .sidebar {
+    width: min(300px, 84vw);
     transform: translateX(100%);
-    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.6);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.28s;
+    box-shadow: -8px 0 36px rgba(0, 0, 0, 0.7);
+    z-index: 105;
   }
+
   body.en .sidebar {
     transform: translateX(-100%);
   }
+
   .sidebar.open {
     transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
   }
+
   .sb-toggle {
     display: none;
   }
+
+  .sb-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--card-b);
+    background: var(--bg3);
+    color: var(--t2);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 0;
+    margin-inline-start: auto;
+  }
+
+  .sb-close-btn:hover {
+    background: var(--hover);
+    color: var(--accent-light);
+    border-color: var(--accent);
+  }
+
   .main {
+    width: 100%;
     margin-right: 0 !important;
     margin-left: 0 !important;
-    padding: 18px 14px 40px;
-  }
-  .metrics {
-    grid-template-columns: 1fr 1fr;
-  }
-  .g2 {
-    grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 600px) {
-  .metrics {
-    grid-template-columns: 1fr;
+/* ------------------------------------------------------------
+   2. MOBILE BREAKPOINT (<= 768px)
+   ------------------------------------------------------------ */
+@media (max-width: 768px) {
+  .mob-nav-bar {
+    display: flex;
   }
+
+  .main {
+    padding: 16px 14px calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .metric {
+    padding: clamp(12px, 3.5vw, 16px);
+    border-radius: 14px;
+  }
+
+  .metric-label {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .metric-val {
+    font-size: clamp(18px, 4.5vw, 22px);
+  }
+
+  .g2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
   .form-row {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .field {
+    margin-bottom: 12px;
+  }
+
+  .field label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    min-height: 44px;
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  .btn {
+    min-height: 42px;
+    font-size: 13px;
+  }
+
+  .btn-sm {
+    min-height: 36px;
+    padding: 7px 12px;
+  }
+
+  /* Table-to-Card Transformation for Mobile */
+  .table-wrap {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .table-wrap table {
+    display: block;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .table-wrap thead {
+    display: none;
+  }
+
+  .table-wrap tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .table-wrap tr {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "chk name status"
+      "proto proto usage"
+      "ops ops ops";
+    gap: 10px 8px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--card-b);
+    border-radius: var(--radius);
+    padding: 14px 14px 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+
+  .table-wrap tr:active {
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+
+  .table-wrap td {
+    border: none;
+    padding: 0;
+    background: transparent !important;
+  }
+
+  .td-chk {
+    grid-area: chk;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .td-chk input {
+    width: 20px !important;
+    height: 20px !important;
+    accent-color: var(--accent);
+  }
+
+  .td-drag {
+    display: none !important;
+  }
+
+  .td-name {
+    grid-area: name;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 4px;
+  }
+
+  body.en .td-name {
+    padding-right: 0;
+    padding-left: 4px;
+  }
+
+  .td-name span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .td-status {
+    grid-area: status;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+  }
+
+  .td-proto {
+    grid-area: proto;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding-top: 8px !important;
+  }
+
+  .td-usage {
+    grid-area: usage;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding-top: 8px !important;
+    color: var(--t2);
+  }
+
+  .td-ops {
+    grid-area: ops;
+    padding-top: 4px !important;
+    width: 100%;
+  }
+
+  .td-ops .ops {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    width: 100%;
+  }
+
+  .td-ops .op-btn {
+    width: 100%;
+    height: 38px;
+    border-radius: 9px;
+    background: var(--bg3);
+    border: 1px solid var(--card-b);
+  }
+
+  .td-ops .op-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .table-wrap tr:has(td[colspan]) {
+    display: block;
+    text-align: center;
+  }
+
+  .table-wrap td[colspan] {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 24px 12px;
+  }
+
+  /* Bulk Bar on Mobile */
+  .bulk-bar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+
+  .bulk-bar-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+
+  .bulk-bar-actions button {
+    width: 100%;
+    min-height: 38px;
+  }
+}
+
+/* ------------------------------------------------------------
+   3. SMALL SCREENS & MODALS (<= 640px)
+   ------------------------------------------------------------ */
+@media (max-width: 640px) {
+  .page-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .page-head-actions {
+    width: 100%;
+  }
+
+  .page-head-actions input {
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+  }
+
+  .page-head-actions button {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+  }
+
+  .range-tabs {
+    width: 100%;
+    justify-content: space-between;
+    overflow-x: auto;
+  }
+
+  .range-tab {
+    flex: 1;
+    text-align: center;
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+
+  /* Bottom-Sheet Modals */
+  .modal-bg {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 22px 22px 0 0 !important;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 20px 18px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    border-bottom: none;
+    box-shadow: 0 -12px 36px rgba(0, 0, 0, 0.7);
+    animation: slideUpSheet 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .modal::before {
+    content: '';
+    display: block;
+    width: 38px;
+    height: 4.5px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.22);
+    margin: 0 auto 16px;
+  }
+
+  @keyframes slideUpSheet {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-actions button {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+/* ------------------------------------------------------------
+   4. COMPACT MOBILE SCREENS (<= 360px down to 320px)
+   ------------------------------------------------------------ */
+@media (max-width: 360px) {
+  .main {
+    padding: 12px 10px calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .metrics {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .td-ops .ops {
+    gap: 4px;
+  }
+
+  .td-ops .op-btn {
+    height: 36px;
+  }
+
+  .crypto-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .crypto-row button {
+    width: 100%;
+  }
+
+  .donate-box {
+    padding: 18px 12px;
   }
 }

@@ -230,30 +230,36 @@ if (localStorage.getItem('meyren_sb_c') === '1') {
 
 const mobBtn = document.getElementById('mobMenuBtn');
 const overlay = document.getElementById('overlay');
-if (mobBtn) {
-  mobBtn.onclick = () => {
-    sb.classList.add('open');
-    overlay.classList.add('show');
-  };
+const sbCloseBtn = document.getElementById('sbCloseBtn');
+const mobMoreBtn = document.getElementById('mobMoreBtn');
+
+function openDrawer() {
+  sb.classList.add('open');
+  overlay.classList.add('show');
 }
-if (overlay) {
-  overlay.onclick = () => {
-    sb.classList.remove('open');
-    overlay.classList.remove('show');
-  };
+function closeDrawer() {
+  sb.classList.remove('open');
+  overlay.classList.remove('show');
 }
+
+if (mobBtn) mobBtn.onclick = openDrawer;
+if (mobMoreBtn) mobMoreBtn.onclick = openDrawer;
+if (sbCloseBtn) sbCloseBtn.onclick = closeDrawer;
+if (overlay) overlay.onclick = closeDrawer;
 
 // Navigation Tabs
 function goPage(name) {
   document.querySelectorAll('.nav-item').forEach(n => {
     n.classList.toggle('on', n.dataset.page === name);
   });
+  document.querySelectorAll('.mob-nav-btn[data-page]').forEach(n => {
+    n.classList.toggle('on', n.dataset.page === name);
+  });
   document.querySelectorAll('.page').forEach(p => {
     p.classList.toggle('on', p.id === 'page-' + name);
   });
 
-  sb.classList.remove('open');
-  overlay.classList.remove('show');
+  closeDrawer();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   if (name === 'logs') loadLogs();
@@ -265,6 +271,9 @@ function goPage(name) {
 }
 
 document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => goPage(el.dataset.page));
+});
+document.querySelectorAll('.mob-nav-btn[data-page]').forEach(el => {
   el.addEventListener('click', () => goPage(el.dataset.page));
 });
 
@@ -441,45 +450,45 @@ function renderLinksTable(arr) {
 
     return `
       <tr data-uid="${uid}">
-        <td style="width:40px;text-align:center;padding:10px 8px">
-          <input type="checkbox" class="cfg-chk" data-uid="${uid}" onchange="updateBulkBar()" style="width:16px;height:16px;margin:0;vertical-align:middle;cursor:pointer">
+        <td class="td-chk" style="width:40px;text-align:center;padding:10px 8px">
+          <input type="checkbox" class="cfg-chk" data-uid="${uid}" onchange="updateBulkBar()" style="width:18px;height:18px;margin:0;vertical-align:middle;cursor:pointer" aria-label="انتخاب کانفیگ">
         </td>
-        <td style="width:28px;text-align:center;padding:10px 4px">
+        <td class="td-drag" style="width:28px;text-align:center;padding:10px 4px">
           <span class="drag-dots" title="جابجایی">⋮⋮</span>
         </td>
-        <td>
+        <td class="td-name">
           <div style="display:flex;align-items:center;gap:6px">
             <span class="${connBadgeClass}">${connCount}</span>
             <span style="font-weight:700;font-size:13px">${name}</span>
           </div>
         </td>
-        <td>
+        <td class="td-proto">
           <span class="proto-tag">${proto}</span>
         </td>
-        <td>
+        <td class="td-status">
           <label class="switch">
-            <input type="checkbox" ${isChecked} onchange="toggleLinkActive('${uid}', this.checked)">
+            <input type="checkbox" ${isChecked} onchange="toggleLinkActive('${uid}', this.checked)" aria-label="وضعیت فعال">
             <span class="slider"></span>
           </label>
         </td>
-        <td>
+        <td class="td-usage">
           <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600">${used}</span>
         </td>
-        <td>
+        <td class="td-ops">
           <div class="ops">
-            <button class="op-btn" onclick="copyText('${vlessLink}')" title="کپی لینک کانفیگ">
+            <button class="op-btn" onclick="copyText('${vlessLink}')" title="کپی لینک کانفیگ" aria-label="کپی لینک">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <button class="op-btn" onclick="copyText('${subUrl}')" title="کپی لینک ساب">
+            <button class="op-btn" onclick="copyText('${subUrl}')" title="کپی لینک ساب" aria-label="کپی ساب">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
             </button>
-            <button class="op-btn" onclick="showQrModal('${vlessLink}', '${name}')" title="نمایش QR Code">
+            <button class="op-btn" onclick="showQrModal('${vlessLink}', '${name}')" title="نمایش QR Code" aria-label="نمایش QR">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
             </button>
-            <button class="op-btn" onclick="resetLinkUsage('${uid}')" title="صفر کردن مصرف">
+            <button class="op-btn" onclick="resetLinkUsage('${uid}')" title="صفر کردن مصرف" aria-label="صفر کردن مصرف">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
             </button>
-            <button class="op-btn danger" onclick="deleteLink('${uid}')" title="حذف">
+            <button class="op-btn danger" onclick="deleteLink('${uid}')" title="حذف" aria-label="حذف">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </button>
           </div>

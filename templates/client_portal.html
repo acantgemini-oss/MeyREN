@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>{{ link.label }} · MeyREN Gateway Subscription</title>
   <link rel="stylesheet" href="/static/style.css">
   <link rel="icon" type="image/png" href="/static/logo.png">
@@ -14,6 +14,10 @@
       --portal-accent: #3b82f6;
       --portal-glow: rgba(37, 99, 235, 0.32);
     }
+    html, body {
+      overflow-x: clip;
+      max-width: 100vw;
+    }
     body {
       background-color: var(--portal-bg);
       color: #e2e8f0;
@@ -24,6 +28,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      direction: ltr !important;
+      text-align: left !important;
     }
     .portal-container {
       width: 100%;
@@ -236,9 +242,66 @@
       align-items: center;
       gap: 10px;
     }
+
+    @media (max-width: 520px) {
+      .portal-container {
+        padding: 16px 12px calc(36px + env(safe-area-inset-bottom, 0px));
+      }
+      .portal-card {
+        padding: 18px 14px;
+        border-radius: 14px;
+      }
+      .user-name {
+        font-size: 18px;
+      }
+      .btn-app-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      .btn-app {
+        padding: 11px 10px;
+        font-size: 12px;
+        min-height: 42px;
+      }
+      .sub-box {
+        padding: 10px 12px;
+      }
+      .sub-box button {
+        min-height: 36px;
+        padding: 6px 12px !important;
+      }
+      .config-card {
+        padding: 12px;
+      }
+      .btn-action-row button {
+        min-height: 34px;
+        padding: 6px 12px !important;
+      }
+    }
+
+    @media (max-width: 340px) {
+      .portal-container {
+        padding: 12px 8px 24px;
+      }
+      .portal-card {
+        padding: 14px 10px;
+      }
+      .btn-app-grid {
+        grid-template-columns: 1fr;
+      }
+      .quota-details {
+        gap: 6px;
+      }
+      .quota-item .lbl {
+        font-size: 9.5px;
+      }
+      .quota-item .val {
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
-<body>
+<body dir="ltr">
 
 <div class="portal-container">
   
