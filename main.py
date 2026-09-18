@@ -278,14 +278,21 @@ async def get_stats(_=Depends(auth.require_auth)):
 @app.post("/api/links")
 async def create_link(request: Request, sess=Depends(auth.require_permission("manage_users"))):
     body = await request.json()
-    label = (body.get("label") or "New Link").strip()[:60]
-    limit_value = float(body.get("limit_value") or 0)
-    limit_unit = body.get("limit_unit") or "GB"
+    label = (body.get("label") or body.get("name") or "New Link").strip()[:60]
+    limit_value = float(body.get("limit_value") or body.get("limit") or 0)
+    limit_unit = body.get("limit_unit") or body.get("unit") or "GB"
     limit_bytes = 0 if limit_value <= 0 else utils.parse_size_to_bytes(limit_value, limit_unit)
     
-    speed_mbps = float(body.get("speed_limit_mbps") or 0.0)
-    max_ips = int(body.get("max_ips") or 0)
-    group_id = int(body.get("group_id") or 1)
+    speed_mbps = float(body.get("speed_limit_mbps") or body.get("speed") or 0.0)
+    max_ips = int(body.get("max_ips") or body.get("ip_limit") or 0)
+    group_id = int(body.get("group_id") or body.get("category_id") or 1)
+    
+    protocol = protocols.normalize_protocol(body.get("protocol"))
+    port = int(body.get("port") or 443)
+    fingerprint = body.get("fingerprint") or "chrome"
+    alpn = body.get("alpn") or ""
+    note = body.get("note") or ""
+    config_count = int(body.get("config_count") or body.get("count") or 1)
     
     expires_at = None
     days = body.get("days")
@@ -310,14 +317,33 @@ async def create_link(request: Request, sess=Depends(auth.require_permission("ma
         expires_at=expires_at,
         sub_token=sub_token,
         group_id=group_id,
+        protocol=protocol,
+        port=port,
+        fingerprint=fingerprint,
+        alpn=alpn,
+        note=note,
+        config_count=config_count,
     )
     
     domain = utils.get_domain()
     db.add_audit_log(sess.get("username", "admin"), "create_link", f"{label} ({uid[:8]})", utils.get_client_ip(request))
 
+    vless_uri = protocols.generate_protocol_link(
+        protocol=protocol,
+        uuid=uid,
+        domain=domain,
+        port=port,
+        remark=f"MeyREN-{label}",
+        fingerprint=fingerprint,
+        alpn=alpn,
+    )
+
     return {
         "uuid": uid,
+        "name": label,
         "label": label,
+        "protocol": protocol,
+        "port": port,
         "limit_bytes": limit_bytes,
         "used_bytes": 0,
         "active": True,
@@ -327,9 +353,64 @@ async def create_link(request: Request, sess=Depends(auth.require_permission("ma
         "expires_at": expires_at,
         "sub_token": sub_token,
         "group_id": group_id,
-        "vless_link": utils.generate_vless_link(uid, domain, remark=f"MeyREN-{label}"),
+        "vless_link": vless_uri,
+        "vless": vless_uri,
         "sub_url": f"https://{domain}/sub/{sub_token}",
+        "sub": f"https://{domain}/sub/{sub_token}",
         "client_portal_url": f"https://{domain}/client/{sub_token}",
+    }
+
+
+@app.post("/api/links/auto_create")
+async def auto_create_link(request: Request, sess=Depends(auth.require_permission("manage_users"))):
+    alphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
+    name = "".join(secrets.choice(alphabet) for _ in range(9))
+    if name[0].isdigit():
+        name = "m" + name[1:]
+    
+    uid = utils.generate_uuid(CONFIG["secret"], name)
+    created_at = datetime.now().isoformat()
+    sub_token = secrets.token_urlsafe(16)
+    domain = utils.get_domain()
+    
+    # 30 days default, unlimited quota
+    expires_at = (datetime.utcnow() + timedelta(days=30)).isoformat()
+    
+    db.add_link(
+        uuid=uid,
+        label=name,
+        limit_bytes=0,
+        used_bytes=0,
+        active=True,
+        created_at=created_at,
+        speed_limit_mbps=0.0,
+        max_ips=0,
+        expires_at=expires_at,
+        sub_token=sub_token,
+        group_id=1,
+        protocol="vless-ws",
+        port=443,
+        fingerprint="chrome",
+        config_count=1,
+    )
+    
+    vless_uri = protocols.generate_protocol_link(
+        protocol="vless-ws",
+        uuid=uid,
+        domain=domain,
+        port=443,
+        remark=f"MeyREN-{name}",
+    )
+    
+    db.add_audit_log(sess.get("username", "admin"), "auto_create_link", f"{name} ({uid[:8]})", utils.get_client_ip(request))
+    return {
+        "ok": True,
+        "uuid": uid,
+        "name": name,
+        "vless": vless_uri,
+        "vless_link": vless_uri,
+        "sub": f"https://{domain}/sub/{sub_token}",
+        "sub_url": f"https://{domain}/sub/{sub_token}",
     }
 
 
@@ -341,15 +422,135 @@ async def list_links(_=Depends(auth.require_auth)):
     for data in all_links:
         d = dict(data)
         d["active"] = bool(d.get("active", 1))
-        d["vless_link"] = utils.generate_vless_link(d["uuid"], domain, remark=f"MeyREN-{d['label']}")
+        proto = d.get("protocol") or "vless-ws"
+        d["protocol"] = proto
+        d["port"] = int(d.get("port") or 443)
+        d["vless_link"] = protocols.generate_protocol_link(
+            protocol=proto,
+            uuid=d["uuid"],
+            domain=domain,
+            port=d["port"],
+            remark=f"MeyREN-{d['label']}",
+            fingerprint=d.get("fingerprint"),
+            alpn=d.get("alpn"),
+        )
         tok = d.get("sub_token") or d["uuid"]
         d["sub_url"] = f"https://{domain}/sub/{tok}"
         d["client_portal_url"] = f"https://{domain}/client/{tok}"
-        d["active_ips"] = list(limiter.get_active_ips_for_uuid(d["uuid"]))
+        active_ips = list(limiter.get_active_ips_for_uuid(d["uuid"]))
+        d["active_ips"] = active_ips
+        d["connected_ips"] = len(active_ips)
+        d["config_count"] = int(d.get("config_count") or 1)
         result.append(d)
     
-    result.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+    result.sort(key=lambda x: (x.get("sort_order", 0), x.get("created_at", "")), reverse=True)
     return {"links": result}
+
+
+@app.post("/api/links/bulk")
+async def bulk_links_action(request: Request, sess=Depends(auth.require_permission("manage_users"))):
+    body = await request.json()
+    action = body.get("action")
+    uids = body.get("uids") or []
+    if not isinstance(uids, list):
+        raise HTTPException(status_code=400, detail="uids must be a list")
+    
+    count = 0
+    for uid in uids:
+        if action == "enable":
+            db.update_link(uuid=uid, active=True)
+            count += 1
+        elif action == "disable":
+            db.update_link(uuid=uid, active=False)
+            count += 1
+        elif action == "reset":
+            db.update_link(uuid=uid, reset_usage=True)
+            limiter.reset_throttle(uid)
+            count += 1
+        elif action == "delete":
+            db.delete_link(uid)
+            limiter.reset_throttle(uid)
+            count += 1
+
+    db.add_audit_log(sess.get("username", "admin"), f"bulk_{action}", f"{count} links", utils.get_client_ip(request))
+    return {"ok": True, "count": count}
+
+
+@app.get("/api/connections")
+async def get_connections_endpoint(_=Depends(auth.require_auth)):
+    return {
+        "count": limiter.get_active_connections_count(),
+        "connections": limiter.get_connections_summary(),
+    }
+
+
+@app.get("/api/backup/download")
+async def download_backup_endpoint(type: str = "users", sess=Depends(auth.require_permission("all"))):
+    if type == "bot":
+        bot_cfg = db.get_setting("telegram_bot") or "{}"
+        return Response(content=bot_cfg, media_type="application/json", headers={"Content-Disposition": "attachment; filename=meyren_bot_backup.json"})
+    
+    users = db.get_links()
+    backup_data = {
+        "version": "2.0",
+        "exported_at": datetime.utcnow().isoformat(),
+        "links": users,
+    }
+    return Response(
+        content=json.dumps(backup_data, indent=2, ensure_ascii=False),
+        media_type="application/json",
+        headers={"Content-Disposition": "attachment; filename=meyren_users_backup.json"}
+    )
+
+
+@app.post("/api/backup/restore")
+async def restore_backup_endpoint(request: Request, sess=Depends(auth.require_permission("all"))):
+    body = await request.json()
+    mode = body.get("mode", "merge")
+    raw_links = body.get("links") or []
+    
+    if mode == "replace":
+        for old in db.get_links():
+            db.delete_link(old["uuid"])
+            
+    restored = 0
+    for l in raw_links:
+        uid = l.get("uuid")
+        if not uid:
+            continue
+        if db.get_link(uid):
+            db.update_link(
+                uuid=uid,
+                label=l.get("label"),
+                limit_bytes=l.get("limit_bytes"),
+                active=bool(l.get("active", 1)),
+                speed_limit_mbps=l.get("speed_limit_mbps"),
+                max_ips=l.get("max_ips"),
+                expires_at=l.get("expires_at"),
+                protocol=l.get("protocol"),
+                port=l.get("port"),
+            )
+        else:
+            db.add_link(
+                uuid=uid,
+                label=l.get("label") or "Restored",
+                limit_bytes=int(l.get("limit_bytes") or 0),
+                used_bytes=int(l.get("used_bytes") or 0),
+                active=bool(l.get("active", 1)),
+                created_at=l.get("created_at") or datetime.now().isoformat(),
+                speed_limit_mbps=float(l.get("speed_limit_mbps") or 0.0),
+                max_ips=int(l.get("max_ips") or 0),
+                expires_at=l.get("expires_at"),
+                sub_token=l.get("sub_token"),
+                group_id=int(l.get("group_id") or 1),
+                protocol=l.get("protocol") or "vless-ws",
+                port=int(l.get("port") or 443),
+                fingerprint=l.get("fingerprint") or "chrome",
+            )
+        restored += 1
+        
+    db.add_audit_log(sess.get("username", "admin"), "restore_backup", f"{restored} links ({mode})", utils.get_client_ip(request))
+    return {"ok": True, "restored": restored}
 
 
 @app.patch("/api/links/{uid}")
@@ -361,6 +562,8 @@ async def update_link_endpoint(uid: str, request: Request, sess=Depends(auth.req
     limit_bytes = None
     if "limit_value" in body:
         limit_bytes = utils.parse_size_to_bytes(float(body.get("limit_value", 0)), body.get("limit_unit", "GB"))
+    elif "limit_bytes" in body:
+        limit_bytes = int(body.get("limit_bytes") or 0)
 
     expires_at = ...
     if "days" in body:
@@ -382,6 +585,13 @@ async def update_link_endpoint(uid: str, request: Request, sess=Depends(auth.req
         max_ips=int(body["max_ips"]) if "max_ips" in body else None,
         expires_at=expires_at,
         group_id=int(body["group_id"]) if "group_id" in body else None,
+        protocol=body.get("protocol"),
+        port=body.get("port"),
+        fingerprint=body.get("fingerprint"),
+        alpn=body.get("alpn"),
+        note=body.get("note"),
+        config_count=body.get("config_count"),
+        sort_order=body.get("sort_order"),
     )
 
     if body.get("reset_usage"):

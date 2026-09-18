@@ -1,797 +1,662 @@
 <!DOCTYPE html>
-<html lang="fa" data-theme="dark">
+<html lang="fa" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MeyREN | Gateway Dashboard</title>
+<title>MeyREN | پنل مدیریت</title>
 <link rel="icon" type="image/png" href="/static/logo.png?v=3.1">
 <link rel="apple-touch-icon" href="/static/logo.png?v=3.1">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#06070d">
+<meta name="theme-color" content="#07080e">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<link rel="stylesheet" href="/static/style.css?v=3.1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="stylesheet" href="/static/style.css?v=3.2">
 </head>
 <body>
 
-<div class="toast" id="toast"></div>
+<div class="overlay" id="overlay"></div>
 
-<div class="mobile-header">
-  <div style="display:flex;align-items:center;gap:8px">
-    <img src="/static/logo.png?v=3.1" alt="Logo" class="brand-logo-img" width="26" height="26" style="width:26px;height:26px;max-width:26px;max-height:26px;border-radius:50%;object-fit:cover;">
-    <span style="font-weight:900;font-size:14px;background:var(--primary-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent">MeyREN</span>
+<!-- Mobile Header -->
+<div class="mob-hdr" id="mobHdr">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="sb-logo-icon" style="width:34px;height:34px;padding:4px">
+      <img src="/static/logo.png?v=3.1" alt="Logo">
+    </div>
+    <span style="font-weight:800;font-size:16px;background:linear-gradient(135deg,#fff,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent">MeyREN</span>
   </div>
-  <button class="menu-toggle" id="menu-toggle-btn">&#9776;</button>
+  <button class="btn btn-sm" id="mobMenuBtn" style="padding:6px 10px">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
 </div>
-<div class="sidebar-overlay" id="sidebar-overlay"></div>
 
+<!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-brand">
-    <div class="sidebar-brand-left">
-      <img src="/static/logo.png?v=3.1" alt="MeyREN Logo" class="brand-logo-img" width="32" height="32" style="width:32px;height:32px;max-width:32px;max-height:32px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none'">
-      <span class="brand-name">MeyREN</span>
+  <button type="button" class="sb-toggle" id="sbToggle" title="تغییر اندازه منو">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+
+  <div class="sb-logo">
+    <div class="sb-logo-icon">
+      <img src="/static/logo.png?v=3.1" alt="MeyREN">
     </div>
-    <div class="sidebar-brand-right">
-      <button id="theme-btn" title="Toggle theme">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-      </button>
+    <div class="sb-logo-text">
+      <div class="sb-logo-name">MeyREN</div>
+      <div class="sb-logo-ver">v2.0 · Gateway</div>
     </div>
   </div>
-  <nav class="sidebar-nav">
-    <div class="nav-section" data-en="Main" data-fa="اصلی">Main</div>
-    <button class="nav-item active" data-page="dashboard">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      <span data-en="Dashboard" data-fa="داشبورد">Dashboard</span>
+
+  <nav class="nav">
+    <div class="nav-sec" data-i18n="sec_panel">پنل</div>
+    
+    <button class="nav-item" data-page="dash">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span class="nav-label" data-i18n="nav_dash">داشبورد</span>
     </button>
-    <button class="nav-item" data-page="inbounds">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-      <span data-en="Inbounds" data-fa="اینباندها">Inbounds</span>
-      <span class="nav-badge" id="links-badge">0</span>
+
+    <button class="nav-item on" data-page="configs">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span class="nav-label" data-i18n="nav_configs">کانفیگ‌ها</span>
     </button>
+
     <button class="nav-item" data-page="groups">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-      <span data-en="Groups & Mixer" data-fa="دسته‌ها و ترکیب">Groups & Mixer</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+      <span class="nav-label" data-i18n="nav_groups">گروه‌ها</span>
     </button>
-    <button class="nav-item" data-page="traffic">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <span data-en="Traffic" data-fa="ترافیک">Traffic</span>
+
+    <button class="nav-item" data-page="create">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+      <span class="nav-label" data-i18n="nav_create">ساخت کانفیگ</span>
     </button>
-    <button class="nav-item" data-page="announcements">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <span data-en="Announcements" data-fa="اطلاعیه‌ها">Announcements</span>
+
+    <button class="nav-item" data-page="stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="nav-label" data-i18n="nav_stats">آمار</span>
     </button>
-    <div class="nav-section" data-en="System" data-fa="سیستم">System</div>
+
+    <button class="nav-item" data-page="logs">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span class="nav-label" data-i18n="nav_logs">لاگ فعالیت</span>
+    </button>
+
+    <div class="nav-sec" data-i18n="sec_sys">سیستم</div>
+
+    <button class="nav-item" data-page="telegram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      <span class="nav-label" data-i18n="nav_telegram">ربات تلگرام</span>
+    </button>
+
+    <button class="nav-item" data-page="news">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>
+      <span class="nav-label" data-i18n="nav_news">اخبار</span>
+    </button>
+
     <button class="nav-item" data-page="admins">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <span data-en="Admins & RBAC" data-fa="مدیران و دسترسی">Admins & RBAC</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="nav-label" data-i18n="nav_admins">ادمین‌ها</span>
     </button>
-    <button class="nav-item" data-page="audit-logs">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      <span data-en="Audit Logs" data-fa="گزارش عملیات">Audit Logs</span>
+
+    <button class="nav-item" data-page="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <span class="nav-label" data-i18n="nav_settings">تنظیمات</span>
     </button>
-    <button class="nav-item" data-page="tools">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      <span data-en="Network Tools" data-fa="ابزارهای شبکه">Network Tools</span>
+
+    <button class="nav-item" data-page="support">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+      <span class="nav-label" data-i18n="nav_support">پشتیبانی</span>
     </button>
-    <button class="nav-item" data-page="security">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-      <span data-en="Security" data-fa="امنیت">Security</span>
+
+    <button class="nav-item" data-page="donate">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span class="nav-label" data-i18n="nav_donate">حمایت مالی</span>
     </button>
   </nav>
-  <div class="sidebar-footer">
-    <div class="footer-row">
-      <button class="footer-btn" id="lang-en">EN</button>
-      <button class="footer-btn active" id="lang-fa">FA</button>
-    </div>
-    <button class="logout-btn" id="logout-btn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      <span data-en="Logout" data-fa="خروج">Logout</span>
+
+  <div class="sb-foot">
+    <button type="button" id="themeBtn" onclick="toggleTheme()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <span id="themeLabel" data-i18n="theme">تم روشن</span>
     </button>
-    <div class="version" style="margin-top:10px;line-height:1.5;">
-      MeyREN v1.1<br>
-      <a href="https://github.com/meytiii/MeyREN" target="_blank" style="color:var(--text3);text-decoration:none;">GitHub</a>
-    </div>
+    <button type="button" onclick="refreshAll()" title="بروزرسانی آمار">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.1-3.4L23 10M1 14l5.4 4.4A9 9 0 0 0 20.5 15"/></svg>
+      <span data-i18n="refresh_stats">بروزرسانی آمار</span>
+    </button>
+    <button type="button" onclick="checkPanelUpdate()" title="بروزرسانی پنل" style="background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.35);color:var(--accent-light)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+      <span data-i18n="refresh_panel">بروزرسانی پنل</span>
+    </button>
+    <a href="#" onclick="doLogout();return false;" class="btn danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M10 5H5v14h5"/><path d="m14 8 4 4-4 4"/><path d="M18 12H9"/></svg>
+      <span data-i18n="logout">خروج</span>
+    </a>
   </div>
 </aside>
 
-<main class="main">
+<!-- Main View -->
+<main class="main" id="main">
 
-  <!-- DASHBOARD PAGE -->
-  <section class="page active" id="page-dashboard">
-    <div class="page-header">
+  <!-- ==================== 1. DASHBOARD ==================== -->
+  <section class="page" id="page-dash">
+    <div class="page-head">
       <div>
-        <div class="page-title" data-en="Dashboard" data-fa="داشبورد">Dashboard</div>
-        <div class="page-sub" id="last-update" data-en="Updated: --" data-fa="بروزرسانی: --">بروزرسانی: --</div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <div class="speed-pill">
-          <span class="pulse-dot"></span>
-          <span id="s-speed-label" data-en="Speed:" data-fa="سرعت:">Speed:</span>
-          <span id="s-speed">0.0 KB/s</span>
+        <div class="page-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span data-i18n="nav_dash">داشبورد</span>
         </div>
-        <button class="btn btn-sub" id="btn-dash-sub">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          <span data-en="Subscription" data-fa="لینک اشتراک">Subscription</span>
-        </button>
-        <button class="btn btn-secondary" id="btn-quick-half" data-en="+ 0.5 GB" data-fa="+ ۰.۵ گیگابایت">+ 0.5 GB</button>
-        <button class="btn btn-primary" id="btn-quick-full" data-en="+ 1 GB" data-fa="+ ۱ گیگابایت">+ 1 GB</button>
+        <div class="page-sub" id="lastUpd" data-i18n="loading">در حال بارگذاری...</div>
       </div>
     </div>
-
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-label" data-en="Traffic" data-fa="ترافیک کل">Traffic</div>
-        <div class="stat-value bidi-safe" id="s-traffic"><bdi>-- MB</bdi></div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label" data-i18n="m_conns">اتصالات فعال</div><div class="metric-val" id="mConns">—</div></div>
+      <div class="metric"><div class="metric-label" data-i18n="m_traffic">ترافیک کل</div><div class="metric-val" id="mTraffic">—</div></div>
+      <div class="metric"><div class="metric-label" data-i18n="m_links">کانفیگ‌ها</div><div class="metric-val" id="mLinks">—</div></div>
+      <div class="metric"><div class="metric-label" data-i18n="m_uptime">آپتایم سرور</div><div class="metric-val" id="mUptime" style="font-size:17px">—</div></div>
+    </div>
+    <div class="g2">
+      <div class="card action-card" onclick="goPage('create')">
+        <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="quick_create">ساخت کانفیگ</span></div>
+        <p style="color:var(--t2);font-size:12px;line-height:1.6" data-i18n="quick_create_desc">ساخت دستی با پروتکل‌های متنوع، محدودیت ترافیک، سرعت و انقضا</p>
       </div>
-      <div class="stat-card">
-        <div class="stat-label" data-en="Inbounds" data-fa="اینباندها">Inbounds</div>
-        <div class="stat-value bidi-safe" id="s-links"><bdi>--</bdi></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label" data-en="Uptime" data-fa="آپتایم">Uptime</div>
-        <div class="stat-value bidi-safe" id="s-uptime" style="font-size:18px"><bdi>--</bdi></div>
-      </div>
-      <div class="stat-card" id="stat-domain-card" style="cursor:pointer" title="Manage Domains">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div class="stat-label" data-en="Domain" data-fa="دامنه">Domain</div>
-          <span class="badge-mini" id="s-domain-count" title="Configured Domains">1</span>
-        </div>
-        <div class="stat-value bidi-safe" id="s-domain" style="font-size:12px;word-break:break-all;font-weight:600"><bdi>--</bdi></div>
+      <div class="card action-card purple" onclick="doAutoCreate()">
+        <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg><span data-i18n="auto_create">ساخت خودکار (پیشنهادی)</span></div>
+        <p style="color:var(--t2);font-size:12px;line-height:1.6" data-i18n="auto_create_desc">ساخت سریع با تنظیمات بهینه · لینک VLESS و سابسکریپشن هوشمند</p>
       </div>
     </div>
-
-    <!-- Total Quota Allocation Meter -->
-    <div class="card" style="padding:16px 20px;margin-bottom:18px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px">
-        <span style="font-weight:700;color:var(--text)" data-en="Total Quota Allocation" data-fa="تخصیص کل حجم">Total Quota Allocation</span>
-        <span id="quota-pool-text" class="bidi-safe" style="color:var(--neon-blue);font-weight:700"><bdi>0 GB / 0 GB</bdi></span>
-      </div>
-      <div class="sys-bar" style="height:8px">
-        <div class="sys-bar-fill" id="quota-pool-bar" style="width:0%;background:var(--primary-gradient)"></div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <!-- CPU & RAM + Hourly Traffic -->
-      <div style="display:flex;flex-direction:column;gap:18px">
-        <div class="grid-2" style="gap:14px">
-          <div class="card" style="margin-bottom:0">
-            <div class="card-header"><div class="card-title" data-en="CPU Usage" data-fa="مصرف پردازنده">CPU Usage</div><span id="s-cpu-val" class="bidi-safe" style="font-size:16px;font-weight:800;color:var(--neon-blue)"><bdi>--%</bdi></span></div>
-            <div class="sys-bar"><div class="sys-bar-fill" id="s-cpu-bar" style="width:0%;background:var(--neon-blue)"></div></div>
-          </div>
-          <div class="card" style="margin-bottom:0">
-            <div class="card-header"><div class="card-title" data-en="Memory" data-fa="حافظه رم">Memory</div><span id="s-mem-val" class="bidi-safe" style="font-size:16px;font-weight:800;color:var(--green)"><bdi>--%</bdi></span></div>
-            <div class="sys-bar"><div class="sys-bar-fill" id="s-mem-bar" style="width:0%;background:var(--green)"></div></div>
-          </div>
-        </div>
-        <div class="card" style="margin-bottom:0;flex:1">
-          <div class="card-header"><div class="card-title" data-en="Hourly Traffic" data-fa="ترافیک ساعتی">Hourly Traffic</div></div>
-          <div style="height:170px"><canvas id="trafficChart"></canvas></div>
-        </div>
-      </div>
-
-      <!-- Top Consumers Donut Chart -->
-      <div class="card" style="margin-bottom:0;display:flex;flex-direction:column">
-        <div class="card-header">
-          <div class="card-title" data-en="Top Consumers" data-fa="بیشترین مصرف کنندگان">Top Consumers</div>
-          <span style="font-size:11px;color:var(--text3)" id="top-consumers-count" data-en="Top 5" data-fa="۵ کاربر برتر">Top 5</span>
-        </div>
-        <div style="height:150px;position:relative;margin-bottom:12px">
-          <canvas id="consumersChart"></canvas>
-        </div>
-        <div id="top-consumers-list" style="display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:110px">
-          <div style="font-size:12px;color:var(--text3);text-align:center;padding:10px" data-en="No traffic data yet" data-fa="هنوز داده‌ای ثبت نشده است">No traffic data yet</div>
-        </div>
+    <div class="card">
+      <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>نمودار ترافیک ۲۴ ساعت گذشته</div>
+      <div style="height:220px;position:relative">
+        <canvas id="trafficChart"></canvas>
       </div>
     </div>
   </section>
 
-  <!-- INBOUNDS PAGE -->
-  <section class="page" id="page-inbounds">
-    <div class="page-header">
+  <!-- ==================== 2. CONFIGS (MATCHING SCREENSHOT) ==================== -->
+  <section class="page on" id="page-configs">
+    <div class="page-head">
       <div>
-        <div class="page-title" data-en="Inbounds" data-fa="اینباندها">Inbounds</div>
-        <div class="page-sub" data-en="VLESS over WebSocket" data-fa="VLESS از طریق وب‌سوکت">VLESS over WebSocket</div>
+        <div class="page-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <span data-i18n="nav_configs">کانفیگ‌ها</span>
+        </div>
+        <div class="page-sub" data-i18n="configs_sub">مدیریت لینک‌ها · VLESS و ساب</div>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-sub" id="btn-inbound-sub">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          <span data-en="Subscription Link" data-fa="لینک اشتراک">Subscription Link</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input id="cfgSearch" placeholder="جستجو..." oninput="filterConfigs()" style="padding:8px 12px;border-radius:10px;border:1px solid var(--card-b);background:var(--input-bg);color:var(--t1);font-family:inherit;font-size:12px;min-width:150px">
+        <button class="btn btn-p btn-sm" onclick="goPage('create')" title="ساخت کانفیگ جدید">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 5v14M5 12h14"/></svg>
         </button>
-        <button class="btn btn-secondary" id="btn-domains-modal" title="Manage Domains">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          <span data-en="Domains" data-fa="دامنه‌ها">Domains</span>
+        <button class="btn btn-sm" onclick="refreshAll()" title="بروزرسانی">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.1-3.4L23 10"/></svg>
         </button>
-        <button class="btn btn-secondary" id="btn-export-txt" title="Export Links as Text">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span data-en="Export TXT" data-fa="خروجی متنی">Export TXT</span>
-        </button>
-        <button class="btn btn-secondary" id="btn-backup-json" title="Download JSON Backup">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          <span data-en="Backup" data-fa="پشتیبان‌گیری">Backup</span>
-        </button>
-        <button class="btn btn-secondary" id="btn-restore-json" title="Restore from JSON Backup">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
-          <span data-en="Restore" data-fa="بازیابی">Restore</span>
-        </button>
-        <button class="btn btn-primary" id="btn-add-modal" data-en="+ Add" data-fa="+ افزودن">+ Add</button>
       </div>
     </div>
 
-    <div class="inbounds-toolbar">
-      <div class="search-box">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="inbound-search" placeholder="Search by name or UUID..." data-placeholder-en="Search by name or UUID..." data-placeholder-fa="جستجو بر اساس نام یا شناسه...">
-      </div>
-      <div class="filter-chips">
-        <button class="chip active" id="filter-all" data-en="All" data-fa="همه">All</button>
-        <button class="chip" id="filter-active" data-en="Active" data-fa="فعال">Active</button>
-        <button class="chip" id="filter-disabled" data-en="Disabled" data-fa="غیرفعال">Disabled</button>
-      </div>
-      <button class="btn btn-secondary btn-sm" id="btn-toggle-compact" style="margin-left:auto">
-        <span id="compact-label" data-en="Compact View" data-fa="نمای فشرده">Compact View</span>
-      </button>
-    </div>
-
-    <div class="card" style="border-radius:14px;overflow:hidden;padding:0">
+    <div class="card" style="padding:0">
       <div class="table-wrap">
-        <table class="table" id="inbounds-table">
-          <thead><tr>
-            <th style="width:36px">#</th>
-            <th data-en="Remark" data-fa="نام کاربر">Remark</th>
-            <th style="width:60px" data-en="Type" data-fa="نوع">Type</th>
-            <th data-en="Traffic" data-fa="حجم مصرفی">Traffic</th>
-            <th style="width:68px" data-en="Status" data-fa="وضعیت">Status</th>
-            <th style="width:160px;text-align:right" data-en="Actions" data-fa="عملیات">Actions</th>
-          </tr></thead>
-          <tbody id="links-tbody"></tbody>
+        <div id="bulkBar" class="bulk-bar" style="display:none">
+          <span id="bulkCount">۰ انتخاب شده</span>
+          <div class="bulk-bar-actions">
+            <button class="btn btn-sm" onclick="bulkAction('enable')">فعال‌سازی</button>
+            <button class="btn btn-sm" onclick="bulkAction('disable')">غیرفعال‌سازی</button>
+            <button class="btn btn-sm" onclick="bulkAction('reset')">صفر کردن مصرف</button>
+            <button class="btn btn-sm btn-d" onclick="bulkAction('delete')">حذف</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px;text-align:center;padding:10px 8px">
+                <input type="checkbox" id="chkAll" onchange="toggleSelectAll(this.checked)" title="انتخاب همه" style="width:16px;height:16px;margin:0;vertical-align:middle;cursor:pointer">
+              </th>
+              <th style="width:28px;padding:10px 4px"></th>
+              <th data-i18n="th_name">نام</th>
+              <th data-i18n="th_proto">پروتکل</th>
+              <th data-i18n="th_status">وضعیت</th>
+              <th data-i18n="th_usage">مصرف</th>
+              <th data-i18n="th_ops">عملیات</th>
+            </tr>
+          </thead>
+          <tbody id="linksTable">
+            <tr><td colspan="7" style="text-align:center;color:var(--t3);padding:36px">در حال بارگذاری اطلاعات کانفیگ‌ها...</td></tr>
+          </tbody>
         </table>
       </div>
-      <div class="inbound-cards" id="inbound-cards"></div>
-      <div class="empty" id="links-empty" style="display:none">
-        <div class="empty-icon">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
-        </div>
-        <div id="empty-state-text" data-en="No inbounds found" data-fa="هیچ اینباندی یافت نشد">No inbounds found</div>
-      </div>
     </div>
   </section>
 
-  <!-- TRAFFIC PAGE -->
-  <section class="page" id="page-traffic">
-    <div class="page-header"><div><div class="page-title" data-en="Traffic Analytics" data-fa="آمار ترافیک">Traffic Analytics</div><div class="page-sub" data-en="Server statistics & overview" data-fa="آمار سرور و نمای کلی">Server statistics & overview</div></div></div>
-    <div class="card">
-      <div class="card-header"><div class="card-title" data-en="Overview" data-fa="نمای کلی">Overview</div></div>
-      <div class="status-item"><span class="status-key" data-en="Total Traffic" data-fa="ترافیک کل">Total Traffic</span><span class="status-val bidi-safe" id="t-traffic"><bdi>-- MB</bdi></span></div>
-      <div class="status-item"><span class="status-key" data-en="Total Requests" data-fa="تعداد درخواست‌ها">Total Requests</span><span class="status-val bidi-safe" id="t-reqs"><bdi>--</bdi></span></div>
-      <div class="status-item"><span class="status-key" data-en="Uptime" data-fa="مدت زمان فعالیت">Uptime</span><span class="status-val bidi-safe" id="t-uptime"><bdi>--</bdi></span></div>
-    </div>
-  </section>
-
-  <!-- GROUPS PAGE -->
+  <!-- ==================== 3. GROUPS ==================== -->
   <section class="page" id="page-groups">
-    <div class="page-header">
+    <div class="page-head">
       <div>
-        <div class="page-title" data-en="Groups & Mixer" data-fa="دسته‌ها و ترکیب کانفیگ">Groups & Mixer</div>
-        <div class="page-sub" data-en="Organize nodes and create combined subscription bundles" data-fa="دسته‌بندی اینباندها و ساخت لینک‌های اشتراک ترکیبی">Organize nodes and create combined subscription bundles</div>
-      </div>
-      <div>
-        <button class="btn btn-primary" id="btn-add-group" data-en="+ Add Group" data-fa="+ دسته جدید">+ Add Group</button>
+        <div class="page-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg><span data-i18n="nav_groups">گروه‌ها و دسته‌بندی</span></div>
+        <div class="page-sub">مدیریت دسته‌ها و لینک سابسکریپشن ترکیبی (Mixer)</div>
       </div>
     </div>
-    <div class="card" style="border-radius:14px;overflow:hidden;padding:0">
-      <div class="table-wrap">
-        <table class="table">
-          <thead><tr>
-            <th style="width:50px">ID</th>
-            <th data-en="Group Name" data-fa="نام دسته">Group Name</th>
-            <th data-en="Description" data-fa="توضیحات">Description</th>
-            <th style="width:120px" data-en="Nodes" data-fa="تعداد نودها">Nodes</th>
-            <th style="width:200px;text-align:right" data-en="Actions" data-fa="عملیات">Actions</th>
-          </tr></thead>
-          <tbody id="groups-tbody"></tbody>
-        </table>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">ساخت دسته جدید</div>
+        <div class="field"><label>نام دسته</label><input id="catName" placeholder="مثال: سرورهای VIP"></div>
+        <div class="field"><label>توضیحات</label><input id="catDesc" placeholder="توضیح اختیاری"></div>
+        <button class="btn btn-p" style="width:100%;margin-top:10px" onclick="createCategory()">ثبت دسته</button>
+      </div>
+      <div class="card" style="padding:0">
+        <div style="padding:16px 18px;border-bottom:1px solid var(--card-b);font-weight:700">لیست دسته‌ها</div>
+        <div id="categoriesList" style="padding:12px;max-height:480px;overflow:auto">...</div>
       </div>
     </div>
   </section>
 
-  <!-- ANNOUNCEMENTS PAGE -->
-  <section class="page" id="page-announcements">
-    <div class="page-header">
+  <!-- ==================== 4. CREATE CONFIG ==================== -->
+  <section class="page" id="page-create">
+    <div class="page-head">
       <div>
-        <div class="page-title" data-en="Announcements" data-fa="اطلاعیه‌ها و اخبار">Announcements</div>
-        <div class="page-sub" data-en="Broadcast system alerts to admin dashboard and user client portal" data-fa="پیام‌های سیستمی برای پنل مدیریت و پورتال کاربران">Broadcast system alerts to admin dashboard and user client portal</div>
-      </div>
-      <div>
-        <button class="btn btn-primary" id="btn-add-announcement" data-en="+ New Announcement" data-fa="+ اطلاعیه جدید">+ New Announcement</button>
+        <div class="page-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="manual_create">ساخت کانفیگ</span></div>
+        <div class="page-sub">پشتیبانی از پروتکل‌های مختلف (VLESS WS, XHTTP, VMess, Trojan, Shadowsocks, SOCKS5, TUIC, Hysteria 2, WireGuard)</div>
       </div>
     </div>
-    <div id="announcements-container" style="display:flex;flex-direction:column;gap:12px"></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">مشخصات اصلی کانفیگ</div>
+        <div class="field">
+          <label data-i18n="label_name">نام کانفیگ (Remark)</label>
+          <input id="cfName" placeholder="مثال: client-1">
+        </div>
+        <div class="field">
+          <label data-i18n="label_proto">پروتکل ارتباطی</label>
+          <select id="cfProto">
+            <option value="vless-ws" selected>VLESS WebSocket ⭐ (پیش‌فرض)</option>
+            <option value="xhttp-packet-up">VLESS XHTTP Packet Up (ضد فیلتر)</option>
+            <option value="xhttp-stream-up">VLESS XHTTP Stream Up (سرعت بالا)</option>
+            <option value="xhttp-stream-one">VLESS XHTTP Stream One</option>
+            <option value="vmess-ws">VMess WebSocket</option>
+            <option value="trojan-ws">Trojan WebSocket</option>
+            <option value="shadowsocks">Shadowsocks (AEAD)</option>
+            <option value="socks5">SOCKS5 Proxy</option>
+            <option value="http">HTTP Proxy</option>
+            <option value="hysteria2">Hysteria 2 (UDP/QUIC)</option>
+            <option value="tuic">TUIC v5 (UDP/QUIC)</option>
+            <option value="wireguard">WireGuard</option>
+            <option value="highspeed-demo">HighSpeed Upload/Download (دمو)</option>
+            <option value="gaming-lite-demo">Gaming Lite (دمو پینگ پایین)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="label_limit">محدودیت حجم (۰ = نامحدود)</label>
+            <input id="cfLimit" type="number" value="0" min="0">
+          </div>
+          <div class="field">
+            <label data-i18n="label_unit">واحد حجم</label>
+            <select id="cfUnit"><option value="GB">GB</option><option value="MB">MB</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="label_days">مدت اعتبار (روز، ۰ = نامحدود)</label>
+            <input id="cfDays" type="number" value="30" min="0">
+          </div>
+          <div class="field">
+            <label data-i18n="label_ip">محدودیت همزمانی IP (۰ = آزاد)</label>
+            <input id="cfIp" type="number" value="0" min="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label data-i18n="label_speed">محدودیت سرعت (Mbps، ۰ = آزاد)</label>
+            <input id="cfSpeed" type="number" value="0" min="0">
+          </div>
+          <div class="field">
+            <label>دسته / گروه</label>
+            <select id="cfGroup"><option value="1">عمومی</option></select>
+          </div>
+        </div>
+        <button class="btn btn-p" style="width:100%;margin-top:12px" onclick="doManualCreate()">ساخت کانفیگ</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">تنظیمات پیشرفته شبکه و TLS</div>
+        <div class="form-row">
+          <div class="field">
+            <label>پورت سرور</label>
+            <input id="cfPort" type="number" value="443" min="1" max="65535">
+          </div>
+          <div class="field">
+            <label>فینگرپرینت TLS (uTLS)</label>
+            <select id="cfFp">
+              <option value="chrome" selected>Chrome</option>
+              <option value="firefox">Firefox</option>
+              <option value="safari">Safari</option>
+              <option value="ios">iOS</option>
+              <option value="android">Android</option>
+              <option value="edge">Edge</option>
+              <option value="random">Random</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>IP تمیز یا دامنه اختصاصی (اختیاری)</label>
+          <input id="cfCleanIp" placeholder="مثال: 104.16.1.1 یا دامنه CDN">
+        </div>
+        <div class="field">
+          <label>یادداشت ادمین (اختیاری)</label>
+          <textarea id="cfNote" rows="3" placeholder="یادداشت شخصی درباره این مشتری یا کانفیگ..."></textarea>
+        </div>
+
+        <div style="margin-top:20px;padding:16px;border-radius:12px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2)">
+          <div style="font-weight:700;font-size:13px;color:var(--accent-light);margin-bottom:6px">⚡ ساخت با یک کلیک (Auto)</div>
+          <p style="font-size:12px;color:var(--t2);line-height:1.7">با کلیک روی دکمه زیر، یک کانفیگ بهینه با نام خودکار و ۳۰ روز اعتبار ساخته می‌شود.</p>
+          <button class="btn btn-p btn-sm" style="margin-top:10px;width:100%" onclick="doAutoCreate()">ساخت سریع خودکار</button>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- ADMINS RBAC PAGE -->
-  <section class="page" id="page-admins">
-    <div class="page-header">
+  <!-- ==================== 5. STATS ==================== -->
+  <section class="page" id="page-stats">
+    <div class="page-head">
       <div>
-        <div class="page-title" data-en="Administrators & RBAC" data-fa="مدیران و کنترل دسترسی">Administrators & RBAC</div>
-        <div class="page-sub" data-en="Manage panel sub-admins and assign granular permissions" data-fa="مدیریت ادمین‌ها و سطوح دسترسی">Manage panel sub-admins and assign granular permissions</div>
+        <div class="page-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span data-i18n="nav_stats">آمار مصرف و ترافیک</span></div>
+        <div class="page-sub" data-i18n="stats_sub">ترافیک و اتصالات · فیلتر زمانی</div>
       </div>
-      <div>
-        <button class="btn btn-primary" id="btn-add-admin" data-en="+ Add Admin" data-fa="+ افزودن مدیر">+ Add Admin</button>
-      </div>
-    </div>
-    <div class="card" style="border-radius:14px;overflow:hidden;padding:0">
-      <div class="table-wrap">
-        <table class="table">
-          <thead><tr>
-            <th>Username</th>
-            <th>Role</th>
-            <th>Permissions</th>
-            <th>Status</th>
-            <th style="text-align:right">Actions</th>
-          </tr></thead>
-          <tbody id="admins-tbody"></tbody>
-        </table>
+      <div class="range-tabs">
+        <button class="range-tab" onclick="setStatRange('day',this)" data-i18n="r_day">روز</button>
+        <button class="range-tab" onclick="setStatRange('week',this)" data-i18n="r_week">هفته</button>
+        <button class="range-tab on" onclick="setStatRange('month',this)" data-i18n="r_month">ماه</button>
+        <button class="range-tab" onclick="setStatRange('all',this)" data-i18n="r_all">کل</button>
       </div>
     </div>
-  </section>
-
-  <!-- AUDIT LOGS PAGE -->
-  <section class="page" id="page-audit-logs">
-    <div class="page-header">
-      <div>
-        <div class="page-title" data-en="Audit Logs" data-fa="گزارش رویدادها">Audit Logs</div>
-        <div class="page-sub" data-en="Security trace of administrative operations" data-fa="ردیابی امنیتی فعالیت‌های مدیران">Security trace of administrative operations</div>
-      </div>
-      <div>
-        <button class="btn btn-secondary btn-sm" id="btn-refresh-logs" data-en="Refresh" data-fa="بروزرسانی">Refresh</button>
-      </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label" data-i18n="m_conns">اتصالات فعال</div><div class="metric-val" id="sConns">—</div></div>
+      <div class="metric"><div class="metric-label" data-i18n="m_traffic">مصرف کل</div><div class="metric-val" id="sTraffic">—</div></div>
+      <div class="metric"><div class="metric-label">کاربران فعال</div><div class="metric-val" id="sActive">—</div></div>
+      <div class="metric"><div class="metric-label">آپتایم سرور</div><div class="metric-val" id="sUptime" style="font-size:17px">—</div></div>
     </div>
-    <div class="card" style="border-radius:14px;overflow:hidden;padding:0">
-      <div class="table-wrap">
-        <table class="table">
-          <thead><tr>
-            <th style="width:170px">Timestamp</th>
-            <th style="width:110px">Admin</th>
-            <th style="width:130px">Action</th>
-            <th>Target</th>
-            <th style="width:120px">IP Address</th>
-          </tr></thead>
-          <tbody id="audit-logs-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- NETWORK TOOLS PAGE -->
-  <section class="page" id="page-tools">
-    <div class="page-header">
-      <div>
-        <div class="page-title" data-en="Network Tools & Clean IPs" data-fa="ابزارهای شبکه و آی‌پی سالم">Network Tools & Clean IPs</div>
-        <div class="page-sub" data-en="Latency diagnostics and Cloudflare clean IP auditor" data-fa="تست تاخیر پینگ و جستجوی آی‌پی تمیز کلودفلر">Latency diagnostics and Cloudflare clean IP auditor</div>
-      </div>
-    </div>
-
-    <!-- Quick Ping -->
-    <div class="card" style="margin-bottom:18px">
-      <div class="card-header"><div class="card-title">TCP Latency Ping</div></div>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <input class="form-input" id="ping-host" placeholder="Host (e.g. 1.1.1.1 or domain)" style="flex:2;min-width:180px">
-        <input class="form-input" id="ping-port" type="number" value="443" style="width:90px">
-        <button class="btn btn-primary" id="btn-run-ping">Test Ping</button>
-        <span id="ping-result" style="font-size:13px;font-weight:700"></span>
-      </div>
-    </div>
-
-    <!-- Clean IP Benchmark -->
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Cloudflare Clean IP Benchmark</div>
-        <button class="btn btn-secondary btn-sm" id="btn-benchmark-clean-ips">Run Benchmark</button>
+      <div id="panelInfo" style="font-size:13px;color:var(--t2);line-height:1.8">...</div>
+    </div>
+  </section>
+
+  <!-- ==================== 6. ACTIVITY LOGS ==================== -->
+  <section class="page" id="page-logs">
+    <div class="page-head">
+      <div>
+        <div class="page-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span data-i18n="nav_logs">لاگ فعالیت و رویدادها</span></div>
+        <div class="page-sub">ثبت گزارش عملیات‌های ادمین و وضعیت سرویس</div>
       </div>
-      <div id="clean-ips-container" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:12px;margin-top:12px">
-        <div style="color:var(--text3);font-size:13px">Click 'Run Benchmark' to test candidate clean IPs.</div>
+      <button class="btn btn-sm" onclick="loadLogs()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.1-3.4L23 10"/></svg></button>
+    </div>
+    <div class="card" id="logsBox" style="max-height:600px;overflow-y:auto">
+      <div style="text-align:center;color:var(--t3);padding:28px">در حال بارگذاری لاگ‌ها...</div>
+    </div>
+  </section>
+
+  <!-- ==================== 7. TELEGRAM BOT ==================== -->
+  <section class="page" id="page-telegram">
+    <div class="page-head">
+      <div>
+        <div class="page-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          <span data-i18n="nav_telegram">ربات تلگرام MeyREN</span>
+        </div>
+        <div class="page-sub" data-i18n="tg_sub">توکن ربات و آیدی عددی ادمین · فعال‌سازی خودکار و وب‌هوک</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title" data-i18n="tg_config">پیکربندی ربات</div>
+        <div class="field"><label data-i18n="tg_token">توکن ربات (از BotFather)</label><input id="tgToken" placeholder="123456:ABC-DEF..." autocomplete="off"></div>
+        <div class="field"><label data-i18n="tg_admin">آیدی عددی ادمین</label><input id="tgAdmin" placeholder="123456789" inputmode="numeric"></div>
+        <div class="field" style="display:flex;align-items:center;gap:10px;margin-top:14px">
+          <label class="switch"><input type="checkbox" id="tgWebhook" checked><span class="slider"></span></label>
+          <span data-i18n="tg_webhook" style="font-size:13px;color:var(--t2)">فعال‌سازی Webhook خودکار</span>
+        </div>
+        <div id="tgStatus" style="font-size:12px;color:var(--t3);margin:12px 0"></div>
+        <button class="btn btn-p" style="width:100%;margin-top:10px" onclick="saveTelegram()">
+          <span data-i18n="tg_activate">ذخیره و فعال‌سازی ربات</span>
+        </button>
+      </div>
+      <div class="card">
+        <div class="card-title" data-i18n="tg_help">راهنمای اتصال</div>
+        <ol style="color:var(--t2);font-size:13px;line-height:2.2;padding-right:18px">
+          <li data-i18n="tg_h1">از @BotFather در تلگرام یک ربات بسازید و توکن آن را کپی کنید.</li>
+          <li data-i18n="tg_h2">آیدی عددی تلگرام خود را از @userinfobot بگیرید و وارد کنید.</li>
+          <li data-i18n="tg_h3">روی ذخیره و فعال‌سازی کلیک کنید — سیستم وب‌هوک را تنظیم می‌کند.</li>
+        </ol>
       </div>
     </div>
   </section>
 
-  <!-- SECURITY PAGE -->
-  <section class="page" id="page-security">
-    <div class="page-header"><div><div class="page-title" data-en="Security" data-fa="امنیت">Security</div><div class="page-sub" data-en="Change panel password" data-fa="تغییر رمز عبور کنترل‌پنل">Change panel password</div></div></div>
-    <div class="card" style="max-width:420px">
-      <form id="security-form" onsubmit="return false;">
-        <input type="text" name="username" value="admin" autocomplete="username" style="display:none;" tabindex="-1" aria-hidden="true">
-        <div class="form-group">
-          <label class="form-label" data-en="Current Password" data-fa="رمز عبور فعلی">Current Password</label>
-          <input class="form-input" type="password" id="cur-pw" autocomplete="current-password" placeholder="Enter current password" data-placeholder-en="Enter current password" data-placeholder-fa="رمز عبور فعلی را وارد کنید" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label" data-en="New Password" data-fa="رمز عبور جدید">New Password</label>
-          <input class="form-input" type="password" id="new-pw" autocomplete="new-password" placeholder="Min 4 characters" data-placeholder-en="Min 4 characters" data-placeholder-fa="حداقل ۴ کاراکتر" required>
-        </div>
-        <button type="submit" class="btn btn-primary" id="btn-update-pw" style="margin-top:6px;width:100%;justify-content:center" data-en="Update Password" data-fa="بروزرسانی رمز عبور">Update Password</button>
-      </form>
+  <!-- ==================== 8. NEWS & ANNOUNCEMENTS ==================== -->
+  <section class="page" id="page-news">
+    <div class="page-head">
+      <div>
+        <div class="page-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg><span data-i18n="nav_news">اخبار و اطلاعیه‌ها</span></div>
+        <div class="page-sub">اطلاعیه‌های رسمی سرور و آپدیت‌های پروژه MeyREN</div>
+      </div>
+      <button class="btn btn-sm" onclick="loadNews()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.1-3.4L23 10"/></svg> بروزرسانی اطلاعیه</button>
+    </div>
+    <div class="card" id="newsCard">
+      <div class="card-title" id="newsTitle">نسخه جدید MeyREN v2.0</div>
+      <div id="newsBody" style="white-space:pre-wrap;line-height:1.9;color:var(--t2);font-size:13.5px">خوش آمدید به پنل پیشرفته MeyREN v2.0.
+پشتیبانی از پروتکل‌های چندگانه VLESS WS, XHTTP, VMess, Trojan, Shadowsocks, SOCKS5, TUIC, Hysteria 2 و WireGuard اضافه شد.
+سیستم محدودکننده ترافیک هوشمند و آزمایشگر خودکار IP تمیز فعال است.</div>
+      <div id="newsMeta" style="margin-top:14px;font-size:11.5px;color:var(--t3)">MeyREN Official Broadcast</div>
     </div>
   </section>
+
+  <!-- ==================== 9. ADMINS & RBAC ==================== -->
+  <section class="page" id="page-admins">
+    <div class="page-head">
+      <div>
+        <div class="page-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="nav_admins">مدیریت ادمین‌ها و دسترسی (RBAC)</span></div>
+        <div class="page-sub" data-i18n="admins_sub">ساخت اکانت‌های ادمین با سطوح دسترسی سفارشی</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title" data-i18n="admin_create">ساخت اکانت ادمین</div>
+        <div class="field"><label data-i18n="admin_user">نام کاربری</label><input id="adUser" placeholder="admin2" style="direction:ltr;text-align:left"></div>
+        <div class="form-row">
+          <div class="field"><label data-i18n="admin_pw">رمز عبور</label><input id="adPw" type="password"></div>
+          <div class="field"><label data-i18n="admin_pw2">تکرار رمز</label><input id="adPw2" type="password"></div>
+        </div>
+        <div class="card-title" style="margin-top:12px" data-i18n="admin_perms">دسترسی‌ها</div>
+        <div id="adPerms" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px;color:var(--t2)">
+          <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" value="manage_users" checked> مدیریت کاربران</label>
+          <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" value="view_stats" checked> مشاهده آمار</label>
+          <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" value="settings"> تغییر تنظیمات</label>
+          <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" value="all"> دسترسی کامل</label>
+        </div>
+        <button class="btn btn-p" style="width:100%;margin-top:16px" onclick="createAdmin()" data-i18n="admin_btn">ساخت اکانت ادمین</button>
+      </div>
+      <div class="card" style="padding:0">
+        <div style="padding:16px 18px;border-bottom:1px solid var(--card-b);font-weight:700" data-i18n="admin_list">لیست ادمین‌ها</div>
+        <div id="adminsList" style="padding:12px;max-height:480px;overflow:auto"><div style="color:var(--t3);text-align:center;padding:20px">...</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 10. SETTINGS ==================== -->
+  <section class="page" id="page-settings">
+    <div class="page-head">
+      <div>
+        <div class="page-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><span data-i18n="nav_settings">تنظیمات پنل</span></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title" data-i18n="theme">تم ظاهری</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-p" onclick="setTheme('dark')" data-i18n="theme_dark">تم تیره (Purple Dark)</button>
+          <button class="btn" onclick="setTheme('light')" data-i18n="theme_light">تم روشن (Light)</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" data-i18n="lang_label">زبان سیستم / Language</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-p" onclick="setLang('fa')">فارسی</button>
+          <button class="btn" onclick="setLang('en')">English</button>
+        </div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title" data-i18n="change_pw">تغییر رمز عبور ادمین</div>
+        <div class="field"><label data-i18n="pw_cur">رمز فعلی</label><input type="password" id="pwCur"></div>
+        <div class="field"><label data-i18n="pw_new">رمز جدید</label><input type="password" id="pwNew"></div>
+        <div class="field"><label data-i18n="pw_cf">تکرار رمز جدید</label><input type="password" id="pwCf"></div>
+        <button class="btn btn-p" style="width:100%" onclick="doChangePw()"><span data-i18n="btn_save">ذخیره تغییرات</span></button>
+      </div>
+      <div class="card">
+        <div class="card-title">امنیت و کنترل نفوذ IP</div>
+        <p style="font-size:12.5px;color:var(--t3);line-height:1.8;margin-bottom:12px">سیستم محافظتی MeyREN پس از ۵ تلاش ناموفق پیاپی ورود، آدرس IP را به طور خودکار به مدت ۳۰ دقیقه مسدود می‌سازد.</p>
+        <div id="secStatus" style="font-size:12.5px;color:var(--t2);margin-bottom:12px;padding:10px;border-radius:8px;background:var(--bg3)">وضعیت: عادی و فعال</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-sm" onclick="loadSecurity()">بروزرسانی وضعیت امنیتی</button>
+          <button class="btn btn-sm btn-d" onclick="unlockAllIps()">رفع مسدودی همه IPها</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">بک‌آپ و بازیابی داده‌ها</div>
+      <p style="font-size:12.5px;color:var(--t3);line-height:1.8;margin-bottom:14px">خروجی و بک‌آپ کامل اطلاعات کانفیگ‌ها و ربات را در قالب فایل JSON دریافت یا بازیابی کنید.</p>
+      <div class="g2" style="margin-bottom:14px">
+        <button class="btn btn-p" style="width:100%" onclick="downloadBackup('users')">دانلود فایل بک‌آپ کانفیگ‌ها</button>
+        <button class="btn btn-p" style="width:100%;background:linear-gradient(135deg,#9333ea,#7c3aed)" onclick="downloadBackup('bot')">دانلود بک‌آپ تنظیمات ربات</button>
+      </div>
+      <div class="field">
+        <label>وارد کردن و بازیابی بک‌آپ</label>
+        <input type="file" id="restoreUsersFile" accept="application/json,.json" style="padding:10px">
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn btn-sm" onclick="restoreUsers('merge')">ادغام با کانفیگ‌های فعلی</button>
+          <button class="btn btn-sm btn-d" onclick="restoreUsers('replace')">جایگزینی کامل (پاکسازی و بازنشانی)</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 11. SUPPORT (CUSTOMIZED FOR MEYREN) ==================== -->
+  <section class="page" id="page-support">
+    <div class="page-head">
+      <div>
+        <div class="page-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg><span data-i18n="nav_support">پشتیبانی و ارتباط با MeyREN</span></div>
+        <div class="page-sub">کانال رسمی، گیت‌هاب و راه‌های ارتباطی با تیم توسعه پروژه</div>
+      </div>
+    </div>
+    <div class="support-grid">
+      <a class="support-tile" href="https://github.com/meytiii/MeyREN" target="_blank" rel="noopener">
+        <div class="support-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2.03c-3.34.73-4.03-1.61-4.03-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.1-.75.08-.74.08-.74 1.21.09 1.85 1.24 1.85 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.57C20.56 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z"/></svg></div>
+        <div><div class="support-label" data-i18n="github">گیت‌هاب پروژه</div><div class="support-val">meytiii/MeyREN</div></div>
+      </a>
+      <a class="support-tile" href="https://t.me/MeyREN_Official" target="_blank" rel="noopener">
+        <div class="support-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.2-1.86 8.77c-.14.62-.5.77-1.01.48l-2.8-2.06-1.35 1.3c-.15.15-.27.27-.55.27l.2-2.84 5.18-4.68c.22-.2-.05-.31-.35-.12l-6.4 4.03-2.76-.86c-.6-.19-.61-.6.12-.89l10.78-4.16c.5-.18.94.12.78.86z"/></svg></div>
+        <div><div class="support-label" data-i18n="telegram">کانال رسمی تلگرام</div><div class="support-val">@MeyREN_Official</div></div>
+      </a>
+      <a class="support-tile" href="https://github.com/meytiii/MeyREN/issues" target="_blank" rel="noopener">
+        <div class="support-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div><div class="support-label">گزارش باگ و پیشنهادات</div><div class="support-val">GitHub Issues Tracker</div></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== 12. DONATION (CUSTOMIZED FOR MEYREN) ==================== -->
+  <section class="page" id="page-donate">
+    <div class="page-head" style="justify-content:center">
+      <div>
+        <div class="page-title" style="justify-content:center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span data-i18n="nav_donate">حمایت از توسعه MeyREN</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;width:100%">
+      <div class="donate-box">
+        <div style="font-size:17px;font-weight:800;color:var(--t1);margin-bottom:12px">💜 حمایت مالی از توسعه متن‌باز MeyREN</div>
+        <p style="color:var(--t2);font-size:13.5px;line-height:2">پروژه MeyREN یک راهکار متن‌باز و آزاد برای دسترسی آزاد به اینترنت است. اگر این ابزار برای شما سودمند بوده است، می‌توانید با دونیت کریپتو به نگهداری سرورها و توسعه فیچرهای جدید کمک کنید.</p>
+        
+        <div style="margin-top:20px;text-align:right">
+          <div style="font-size:12px;color:var(--t3);font-weight:700;margin-bottom:4px">آدرس تتر USDT (شبکه TRC20):</div>
+          <div class="crypto-row">
+            <span class="crypto-addr" id="addrUsdt">TLvMeyRENTRC20OfficialWalletSupport99</span>
+            <button class="btn btn-sm btn-p" onclick="copyText(document.getElementById('addrUsdt').textContent)">کپی آدرس</button>
+          </div>
+
+          <div style="font-size:12px;color:var(--t3);font-weight:700;margin-top:14px;margin-bottom:4px">آدرس تن کوین TON:</div>
+          <div class="crypto-row">
+            <span class="crypto-addr" id="addrTon">UQAMeyRENTONNetworkCommunityVault2026</span>
+            <button class="btn btn-sm btn-p" onclick="copyText(document.getElementById('addrTon').textContent)">کپی آدرس</button>
+          </div>
+
+          <div style="font-size:12px;color:var(--t3);font-weight:700;margin-top:14px;margin-bottom:4px">آدرس بیت‌کوین BTC:</div>
+          <div class="crypto-row">
+            <span class="crypto-addr" id="addrBtc">bc1qmeyrenopensourcefuturefreedombtc99</span>
+            <button class="btn btn-sm btn-p" onclick="copyText(document.getElementById('addrBtc').textContent)">کپی آدرس</button>
+          </div>
+        </div>
+
+        <p style="margin-top:20px;font-size:12.5px;color:var(--t3)">حمایت مالی کاملاً اختیاری است و برای کمک به استمرار پروژه دریافت می‌شود. از همراهی‌تان سپاسگزاریم! 💜</p>
+      </div>
+    </div>
+  </section>
+
 </main>
 
-<!-- ADD INBOUND MODAL -->
-<dialog class="modal-dialog" id="add-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="add-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title" data-en="Add Inbound" data-fa="افزودن اینباند جدید">Add Inbound</div>
-    <form id="add-inbound-form" onsubmit="return false;">
-      <div class="form-group">
-        <label class="form-label" data-en="Remark / Name" data-fa="نام کاربر">Remark / Name</label>
-        <input class="form-input" id="new-label" placeholder="e.g. User 1" data-placeholder-en="e.g. User 1" data-placeholder-fa="مثلاً: کاربر ۱" required>
-      </div>
-      <div class="form-row">
-        <div class="form-group" style="flex:1">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <label class="form-label" style="margin-bottom:0" data-en="Domain" data-fa="دامنه">Domain</label>
-            <button type="button" class="btn-link-action" id="btn-add-modal-manage-domains" data-en="+ Manage" data-fa="+ مدیریت">+ Manage</button>
-          </div>
-          <select class="form-select" id="new-domain"></select>
-        </div>
-        <div class="form-group" style="flex:1">
-          <label class="form-label" data-en="Group / Category" data-fa="دسته بندی">Group / Category</label>
-          <select class="form-select" id="new-group"></select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group" style="flex:1">
-          <label class="form-label" data-en="Traffic Limit" data-fa="سقف حجم">Traffic Limit</label>
-          <input class="form-input" id="new-limit" type="number" min="0" step="0.1" placeholder="0 = Unlimited" data-placeholder-en="0 = Unlimited" data-placeholder-fa="۰ = نامحدود">
-        </div>
-        <div class="form-group" style="min-width:80px;max-width:100px">
-          <label class="form-label" data-en="Unit" data-fa="واحد">Unit</label>
-          <select class="form-select" id="new-unit"><option value="GB">GB</option><option value="MB">MB</option></select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group" style="flex:1">
-          <label class="form-label" data-en="Speed Limit (Mbps)" data-fa="محدودیت سرعت (Mbps)">Speed Limit (Mbps)</label>
-          <input class="form-input" id="new-speed" type="number" min="0" step="0.5" placeholder="0 = Unlimited" value="0">
-        </div>
-        <div class="form-group" style="flex:1">
-          <label class="form-label" data-en="Max Concurrent IPs" data-fa="سقف دستگاه (آی‌پی همزمان)">Max Concurrent IPs</label>
-          <input class="form-input" id="new-max-ips" type="number" min="0" step="1" placeholder="0 = Unlimited" value="0">
-        </div>
-        <div class="form-group" style="flex:1">
-          <label class="form-label" data-en="Expire (Days)" data-fa="مدت اعتبار (روز)">Expire (Days)</label>
-          <input class="form-input" id="new-days" type="number" min="0" step="1" placeholder="0 = Never" value="0">
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary" id="btn-create-link" style="width:100%;margin-top:12px;justify-content:center" data-en="Create Inbound" data-fa="ایجاد اینباند">Create Inbound</button>
-    </form>
-  </div>
-</dialog>
-
-<!-- EDIT INBOUND MODAL -->
-<dialog class="modal-dialog" id="edit-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="edit-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title" data-en="Edit Inbound" data-fa="ویرایش اینباند">Edit Inbound</div>
-    <form id="edit-inbound-form" onsubmit="return false;">
-      <input type="hidden" id="edit-uuid">
-      <div class="form-group">
-        <label class="form-label" data-en="Remark / Name" data-fa="نام کاربر">Remark / Name</label>
-        <input class="form-input" id="edit-label" required>
-      </div>
-      <div class="form-row">
-        <div class="form-group" style="flex:1">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <label class="form-label" style="margin-bottom:0" data-en="Domain" data-fa="دامنه">Domain</label>
-            <button type="button" class="btn-link-action" id="btn-edit-modal-manage-domains" data-en="+ Manage" data-fa="+ مدیریت">+ Manage</button>
-          </div>
-          <select class="form-select" id="edit-domain"></select>
-        </div>
-        <div class="form-group" style="flex:1">
-          <label class="form-label" data-en="Group / Category" data-fa="دسته بندی">Group / Category</label>
-          <select class="form-select" id="edit-group"></select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group" style="flex:1">
-          <label class="form-label" data-en="Traffic Limit (GB)" data-fa="سقف حجم (گیگابایت)">Traffic Limit (GB)</label>
-          <input class="form-input" id="edit-limit" type="number" min="0" step="0.1">
-        </div>
-        <div class="form-group" style="flex:1">
-          <label class="form-label" data-en="Speed (Mbps)" data-fa="سرعت (Mbps)">Speed (Mbps)</label>
-          <input class="form-input" id="edit-speed" type="number" min="0" step="0.5">
-        </div>
-        <div class="form-group" style="flex:1">
-          <label class="form-label" data-en="Max Devices" data-fa="سقف کاربر">Max Devices</label>
-          <input class="form-input" id="edit-max-ips" type="number" min="0" step="1">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" data-en="Extend / Set Expiration (Days from now)" data-fa="تمدید تاریخ انقضا (روز از الان)">Extend / Set Expiration (Days from now)</label>
-        <input class="form-input" id="edit-days" type="number" min="0" step="1" placeholder="Leave empty to keep current expiration">
-      </div>
-      <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
-        <input type="checkbox" id="edit-reset-usage" style="accent-color:var(--neon-purple)">
-        <label for="edit-reset-usage" style="font-size:12px;cursor:pointer" data-en="Reset used traffic to 0" data-fa="صفر کردن حجم مصرفی">Reset used traffic to 0</label>
-      </div>
-      <button type="submit" class="btn btn-primary" id="btn-save-edit" style="width:100%;margin-top:14px;justify-content:center" data-en="Save Changes" data-fa="ذخیره تغییرات">Save Changes</button>
-    </form>
-  </div>
-</dialog>
-
-<!-- ADD GROUP MODAL -->
-<dialog class="modal-dialog" id="group-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="group-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title" data-en="Add Group / Category" data-fa="افزودن دسته جدید">Add Group / Category</div>
-    <form id="add-group-form" onsubmit="return false;">
-      <div class="form-group">
-        <label class="form-label" data-en="Group Name" data-fa="نام دسته">Group Name</label>
-        <input class="form-input" id="new-group-name" placeholder="e.g. VIP, Iran, Germany" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label" data-en="Description" data-fa="توضیحات">Description</label>
-        <input class="form-input" id="new-group-desc" placeholder="e.g. High-speed premium nodes">
-      </div>
-      <button type="submit" class="btn btn-primary" id="btn-save-group" style="width:100%;margin-top:10px;justify-content:center">Save Group</button>
-    </form>
-  </div>
-</dialog>
-
-<!-- ADD ANNOUNCEMENT MODAL -->
-<dialog class="modal-dialog" id="announcement-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="announcement-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title">New Broadcast Announcement</div>
-    <form id="add-announcement-form" onsubmit="return false;">
-      <div class="form-group">
-        <label class="form-label">Title</label>
-        <input class="form-input" id="new-ann-title" placeholder="e.g. Server Maintenance Notice" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Level</label>
-        <select class="form-select" id="new-ann-level">
-          <option value="info">Info (Blue)</option>
-          <option value="warning">Warning (Yellow)</option>
-          <option value="critical">Critical (Red)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Message Content</label>
-        <textarea class="form-input" id="new-ann-content" rows="3" placeholder="Enter message to display on user portal and dashboard" required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary" id="btn-save-announcement" style="width:100%;margin-top:10px;justify-content:center">Broadcast Announcement</button>
-    </form>
-  </div>
-</dialog>
-
-<!-- ADD ADMIN MODAL -->
-<dialog class="modal-dialog" id="admin-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="admin-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title">Add Administrator</div>
-    <form id="add-admin-form" onsubmit="return false;">
-      <div class="form-group">
-        <label class="form-label">Username</label>
-        <input class="form-input" id="new-admin-user" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input class="form-input" type="password" id="new-admin-pw" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Role</label>
-        <select class="form-select" id="new-admin-role">
-          <option value="admin">Admin</option>
-          <option value="operator">Operator (Read-Only)</option>
-          <option value="superadmin">Superadmin</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Permissions</label>
-        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
-          <label><input type="checkbox" id="perm-manage-users" checked> Manage Users & Inbounds</label>
-          <label><input type="checkbox" id="perm-view-stats" checked> View Statistics & Traffic</label>
-          <label><input type="checkbox" id="perm-view-logs" checked> View Audit Logs</label>
-          <label><input type="checkbox" id="perm-manage-admins"> Manage Administrators</label>
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary" id="btn-save-admin" style="width:100%;margin-top:10px;justify-content:center">Create Administrator</button>
-    </form>
-  </div>
-</dialog>
-
-<!-- SUBSCRIPTION MODAL -->
-<dialog class="modal-dialog" id="sub-modal">
-  <div class="modal-content" style="max-width:520px">
-    <button class="modal-close" id="sub-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title" data-en="Client Subscription Link" data-fa="لینک اشتراک کلاینت">Client Subscription Link</div>
-    <p style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.6" data-en="Paste this subscription URL into v2rayNG, NekoBox, Sing-Box, or Shadowrocket to auto-sync all active links." data-fa="این لینک را در برنامه‌های v2rayNG یا NekoBox یا Sing-Box وارد کنید تا تمام لینک‌ها خودکار همگام شوند.">
-      Paste this subscription URL into v2rayNG, NekoBox, Sing-Box, or Shadowrocket to auto-sync all active links.
-    </p>
-    <div class="form-group" style="margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <label class="form-label" style="margin-bottom:0" data-en="Subscription Domain" data-fa="دامنه لینک اشتراک">Subscription Domain</label>
-        <button type="button" class="btn-link-action" id="btn-sub-modal-manage-domains" data-en="+ Manage" data-fa="+ مدیریت">+ Manage</button>
-      </div>
-      <select class="form-select" id="sub-domain-select"></select>
+<!-- Result Modal after config creation -->
+<div class="modal-bg" id="resultModal">
+  <div class="modal">
+    <div class="modal-title" data-i18n="created_title">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      کانفیگ با موفقیت ساخته شد
     </div>
-    <div class="detail-value bidi-safe" id="sub-url-box" style="margin-bottom:14px;user-select:all"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" id="btn-copy-sub" data-en="Copy Subscription" data-fa="کپی لینک اشتراک">Copy Subscription</button>
-      <button class="btn btn-secondary btn-sm" id="btn-qr-sub" data-en="Show QR Code" data-fa="نمایش بارکد QR">Show QR Code</button>
-      <button class="btn btn-secondary btn-sm" id="btn-open-sub-txt" data-en="Download .txt" data-fa="دانلود فایل txt">Download .txt</button>
+    <div class="field">
+      <label id="resProtoLabel">لینک مستقیم کانفیگ</label>
+      <div class="link-box" id="resVless">—</div>
+      <button class="btn btn-p btn-sm" style="width:100%" onclick="copyText(document.getElementById('resVless').textContent)">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>کپی لینک کانفیگ</span>
+      </button>
+    </div>
+    <div class="field" style="margin-top:14px">
+      <label data-i18n="sub_label">لینک سابسکریپشن هوشمند (شامل تمامی پروتکل‌ها)</label>
+      <div class="link-box" id="resSub">—</div>
+      <button class="btn btn-sm" style="width:100%" onclick="copyText(document.getElementById('resSub').textContent)">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        <span data-i18n="copy_sub">کپی لینک ساب</span>
+      </button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-p" onclick="closeModal('resultModal')">متوجه شدم</button>
     </div>
   </div>
-</dialog>
+</div>
 
-<!-- DOMAIN MANAGEMENT MODAL -->
-<dialog class="modal-dialog" id="domains-modal">
-  <div class="modal-content" style="max-width:540px">
-    <button class="modal-close" id="domains-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title" data-en="Domain Management" data-fa="مدیریت دامنه‌ها">Domain Management</div>
-    <p style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6" data-en="Manage project domains from Railway, Render, or custom domains. You can assign any domain to configs or subscription links." data-fa="دامنه‌های پروژه از Railway، Render یا دامنه‌های اختصاصی را مدیریت کنید. می‌توانید هر دامنه را به کانفیگ‌ها یا لینک اشتراک متصل نمایید.">
-      Manage project domains from Railway, Render, or custom domains. You can assign any domain to configs or subscription links.
-    </p>
-    
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:16px">
-      <input class="form-input" id="new-custom-domain-input" placeholder="e.g. node2.up.railway.app or mydomain.com" data-placeholder-en="e.g. node2.up.railway.app or mydomain.com" data-placeholder-fa="مثلاً: node2.up.railway.app یا دامنه اختصاصی" style="flex:1">
-      <button class="btn btn-primary btn-sm" id="btn-add-custom-domain" style="white-space:nowrap" data-en="+ Add" data-fa="+ افزودن">+ Add</button>
-    </div>
-
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase" data-en="Configured Domains" data-fa="دامنه‌های فعال">Configured Domains</span>
-      <span id="domains-modal-count" class="bidi-safe" style="font-size:11px;color:var(--neon-blue);font-weight:700">0</span>
-    </div>
-    <div class="domain-list" id="domain-list-container" style="display:flex;flex-direction:column;gap:8px;max-height:240px;overflow-y:auto;padding-right:2px">
-      <!-- Domain rows populated dynamically -->
+<!-- QR Code & Details Modal -->
+<div class="modal-bg" id="qrModal">
+  <div class="modal" style="max-width:420px;text-align:center">
+    <div class="modal-title" style="justify-content:center" id="qrTitle">QR Code کانفیگ</div>
+    <div id="qrcode" style="display:flex;justify-content:center;padding:16px;background:#fff;border-radius:12px;margin:12px 0"></div>
+    <div class="link-box" id="qrText" style="margin-top:10px">—</div>
+    <div class="modal-actions" style="justify-content:center;margin-top:14px">
+      <button class="btn btn-p btn-sm" onclick="copyText(document.getElementById('qrText').textContent)">کپی لینک</button>
+      <button class="btn btn-sm" onclick="closeModal('qrModal')">بستن</button>
     </div>
   </div>
-</dialog>
+</div>
 
-<!-- DETAIL MODAL -->
-<dialog class="modal-dialog" id="detail-modal">
-  <div class="modal-content" style="max-width:540px">
-    <button class="modal-close" id="detail-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title" id="detail-title" data-en="Inbound Details" data-fa="جزئیات اینباند">Inbound Details</div>
-    <div id="detail-content">
-      <div class="detail-row">
-        <div class="detail-col"><div class="detail-label" data-en="Protocol" data-fa="پروتکل">Protocol</div><div class="detail-value" style="font-family:inherit"><span class="tag tag-vless">VLESS</span></div></div>
-        <div class="detail-col"><div class="detail-label" data-en="Status" data-fa="وضعیت">Status</div><div class="detail-value" style="font-family:inherit"><span id="det-status" class="tag"></span></div></div>
-      </div>
-      <div style="margin-bottom:10px"><div class="detail-label">UUID</div><div class="detail-value bidi-safe" id="det-uuid" style="word-break:break-all"></div></div>
-      <div style="margin-bottom:10px">
-        <div class="detail-label" data-en="Assigned Domain" data-fa="دامنه متصل">Assigned Domain</div>
-        <div class="detail-value bidi-safe" id="det-domain" style="font-family:inherit;color:var(--neon-blue);font-weight:600"></div>
-      </div>
-      <div class="detail-row">
-        <div class="detail-col"><div class="detail-label" data-en="Used" data-fa="مصرف شده">Used</div><div class="detail-value bidi-safe" id="det-used"></div></div>
-        <div class="detail-col"><div class="detail-label" data-en="Limit" data-fa="سقف حجم">Limit</div><div class="detail-value bidi-safe" id="det-limit"></div></div>
-        <div class="detail-col"><div class="detail-label" data-en="Usage" data-fa="درصد مصرف">Usage</div><div class="detail-value bidi-safe" id="det-pct"></div></div>
-      </div>
-      <div class="sys-bar" style="margin-bottom:12px"><div class="sys-bar-fill" id="det-bar"></div></div>
-      <div style="margin-bottom:10px"><div class="detail-label" data-en="Created" data-fa="تاریخ ایجاد">Created</div><div class="detail-value bidi-safe" style="font-family:inherit" id="det-created"></div></div>
-      <div style="margin-bottom:0"><div class="detail-label" data-en="VLESS Link" data-fa="لینک VLESS">VLESS Link</div><div class="detail-value bidi-safe" id="det-link" style="word-break:break-all;user-select:all"></div></div>
-      <div class="detail-actions">
-        <button class="btn-copy" id="det-act-copy" style="padding:7px 16px;font-size:12px" data-en="Copy Link" data-fa="کپی لینک">Copy Link</button>
-        <button class="btn-qr" id="det-act-qr" style="padding:7px 16px;font-size:12px" data-en="QR Code" data-fa="بارکد QR">QR Code</button>
-        <button class="btn btn-topup btn-sm" id="det-act-topup" style="padding:7px 16px" data-en="+1 GB Top-Up" data-fa="+ ۱ گیگابایت">+1 GB Top-Up</button>
-        <button class="btn btn-secondary btn-sm" id="det-act-reset" style="padding:7px 16px" data-en="Reset Traffic" data-fa="صفر کردن ترافیک">Reset Traffic</button>
-      </div>
+<!-- Generic Alert Modal -->
+<div class="modal-bg" id="alertModal">
+  <div class="modal">
+    <div class="modal-title" id="alertModalTitle">پیام سیستم</div>
+    <div id="alertModalBody" style="color:var(--t2);font-size:13px;line-height:1.8"></div>
+    <div class="modal-actions">
+      <button class="btn btn-p" onclick="closeModal('alertModal')">تایید</button>
     </div>
   </div>
-</dialog>
+</div>
 
-<!-- QR MODAL -->
-<dialog class="modal-dialog" id="qr-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="qr-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title" id="qr-modal-title" data-en="QR Code" data-fa="بارکد QR">QR Code</div>
-    <div class="qr-box"><img id="qr-img" src="" alt="QR"></div>
-    <div style="margin-top:14px;text-align:center;display:flex;gap:8px;justify-content:center">
-      <button class="btn btn-primary btn-sm" id="btn-download-qr" style="padding:8px 20px" data-en="Download PNG" data-fa="دانلود PNG">Download PNG</button>
-      <button class="btn btn-secondary btn-sm" id="btn-close-qr" style="padding:8px 20px" data-en="Close" data-fa="بستن">Close</button>
-    </div>
-  </div>
-</dialog>
+<div class="toast" id="toast"></div>
 
-<!-- RESTORE BACKUP MODAL -->
-<dialog class="modal-dialog" id="restore-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="restore-modal-close" aria-label="Close">&#x2715;</button>
-    <div class="modal-title" data-en="Restore Links Backup" data-fa="بازیابی نسخه پشتیبان">Restore Links Backup</div>
-    <p style="font-size:12px;color:var(--text3);margin-bottom:14px" data-en="Select a previously exported JSON backup file or paste its content:" data-fa="فایل JSON پشتیبان قبلی را انتخاب کرده یا متن آن را در زیر وارد کنید:">Select a previously exported JSON backup file or paste its content:</p>
-    
-    <div class="file-upload-box" id="restore-dropzone" style="margin-bottom:14px;cursor:pointer">
-      <input type="file" id="restore-file-input" accept=".json" class="file-upload-input">
-      <div class="file-upload-content" style="text-align:center;padding:16px 12px">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto 8px;display:block;color:var(--neon-blue)"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
-        <div id="restore-file-name" style="font-size:12px;font-weight:600;color:var(--text2)" data-en="Click to select or drop backup JSON file" data-fa="برای انتخاب یا رها کردن فایل پشتیبان JSON کلیک کنید">Click to select or drop backup JSON file</div>
-      </div>
-    </div>
-    
-    <div class="form-group">
-      <textarea class="form-input" id="restore-json-text" rows="4" placeholder="Or paste JSON array here..." data-placeholder-en="Or paste JSON array here..." data-placeholder-fa="یا آرایه JSON را اینجا الصاق کنید..."></textarea>
-    </div>
-    <button class="btn btn-primary" id="btn-do-restore" style="width:100%;justify-content:center" data-en="Restore Links" data-fa="بازیابی لینک‌ها">Restore Links</button>
-  </div>
-</dialog>
-
-<!-- TEMPLATES FOR ROWS & CARDS -->
-<template id="tpl-inbound-row">
-  <tr>
-    <td class="col-id" style="color:var(--text3);font-size:11px;font-weight:700"></td>
-    <td>
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-        <span class="col-name" style="font-weight:700;font-size:13px"></span>
-        <span class="col-group-pill badge-group"></span>
-      </div>
-      <div class="col-meta-badges" style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap">
-        <span class="col-domain-pill tag-domain"></span>
-        <span class="col-speed-pill badge-limit" style="display:none"></span>
-        <span class="col-ips-pill badge-limit" style="display:none"></span>
-        <span class="col-expire-pill badge-limit" style="display:none"></span>
-      </div>
-    </td>
-    <td><span class="tag tag-vless">VLESS</span></td>
-    <td>
-      <div class="usage-pill">
-        <span class="col-used used bidi-safe"><bdi></bdi></span>
-        <div class="bar"><div class="col-fill fill"></div></div>
-        <span class="col-limit limit bidi-safe"><bdi></bdi></span>
-      </div>
-    </td>
-    <td><span class="col-status tag"></span></td>
-    <td style="text-align:right">
-      <div style="display:inline-flex;gap:4px;align-items:center;justify-content:flex-end;flex-wrap:wrap">
-        <button class="act-toggle toggle" title="Toggle Active"></button>
-        <button class="act-portal portal-btn" title="Client Portal" data-en="Portal" data-fa="پورتال">Portal</button>
-        <button class="act-copy btn-copy" title="Copy Link" data-en="Copy" data-fa="کپی">Copy</button>
-        <button class="act-qr btn-qr" title="QR Code" data-en="QR" data-fa="بارکد">QR</button>
-        <button class="act-topup btn-topup" title="+1 GB Top-Up" data-en="+1G" data-fa="+۱گ">+1G</button>
-        <button class="act-edit btn-edit" title="Edit" data-en="✎" data-fa="✎">✎</button>
-        <button class="act-info btn btn-secondary btn-sm" title="Details" data-en="ℹ" data-fa="ℹ">ℹ</button>
-        <button class="act-del btn btn-danger btn-sm" title="Delete">&#x2715;</button>
-      </div>
-    </td>
-  </tr>
-</template>
-
-<template id="tpl-inbound-card">
-  <div class="inbound-card">
-    <div class="inbound-card-header">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span class="col-id inbound-card-id"></span>
-        <span class="col-name inbound-card-name"></span>
-        <span class="col-group-pill badge-group"></span>
-        <span class="tag tag-vless">VLESS</span>
-      </div>
-      <button class="act-toggle toggle" title="Toggle Active"></button>
-    </div>
-    <div class="col-meta-badges" style="display:flex;gap:4px;flex-wrap:wrap">
-      <span class="col-domain-pill tag-domain"></span>
-      <span class="col-speed-pill badge-limit" style="display:none"></span>
-      <span class="col-ips-pill badge-limit" style="display:none"></span>
-      <span class="col-expire-pill badge-limit" style="display:none"></span>
-    </div>
-    <div class="usage-pill">
-      <span class="col-used used bidi-safe"><bdi></bdi></span>
-      <div class="bar"><div class="col-fill fill"></div></div>
-      <span class="col-limit limit bidi-safe"><bdi></bdi></span>
-    </div>
-    <div class="inbound-card-actions">
-      <button class="act-portal portal-btn" data-en="Portal" data-fa="پورتال">Portal</button>
-      <button class="act-copy btn-copy" data-en="Copy" data-fa="کپی">Copy</button>
-      <button class="act-qr btn-qr" data-en="QR" data-fa="بارکد">QR</button>
-      <button class="act-topup btn-topup" data-en="+1 GB" data-fa="+ ۱ گیگ">+1 GB</button>
-      <button class="act-edit btn-edit" data-en="Edit" data-fa="ویرایش">Edit</button>
-      <button class="act-info btn btn-secondary btn-sm" data-en="Info" data-fa="جزئیات">Info</button>
-      <button class="act-del btn btn-danger btn-sm" data-en="&#x2715;" data-fa="&#x2715;">&#x2715;</button>
-    </div>
-  </div>
-</template>
-
-<script src="/static/app.js?v=3.0"></script>
+<script src="/static/app.js?v=3.2"></script>
 </body>
 </html>

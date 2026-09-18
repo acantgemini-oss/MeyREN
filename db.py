@@ -82,6 +82,13 @@ def init_db(secret_key: str):
         ("sub_token", "TEXT DEFAULT NULL"),
         ("group_id", "INTEGER DEFAULT 1"),
         ("last_connected_at", "TEXT DEFAULT NULL"),
+        ("protocol", "TEXT DEFAULT 'vless-ws'"),
+        ("port", "INTEGER DEFAULT 443"),
+        ("fingerprint", "TEXT DEFAULT 'chrome'"),
+        ("alpn", "TEXT DEFAULT 'http/1.1'"),
+        ("note", "TEXT DEFAULT ''"),
+        ("config_count", "INTEGER DEFAULT 1"),
+        ("sort_order", "INTEGER DEFAULT 0"),
     ]
 
     for col_name, col_type in new_cols:
@@ -228,6 +235,13 @@ def add_link(
     expires_at: str | None = None,
     sub_token: str | None = None,
     group_id: int = 1,
+    protocol: str = "vless-ws",
+    port: int = 443,
+    fingerprint: str = "chrome",
+    alpn: str = "http/1.1",
+    note: str = "",
+    config_count: int = 1,
+    sort_order: int = 0,
 ):
     if not sub_token:
         sub_token = secrets.token_urlsafe(16)
@@ -237,11 +251,13 @@ def add_link(
     c.execute(
         """INSERT INTO links (
             uuid, label, limit_bytes, used_bytes, active, created_at,
-            speed_limit_mbps, max_ips, expires_at, sub_token, group_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            speed_limit_mbps, max_ips, expires_at, sub_token, group_id,
+            protocol, port, fingerprint, alpn, note, config_count, sort_order
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
         (
             uuid, label, limit_bytes, used_bytes, int(active), created_at,
-            speed_limit_mbps, max_ips, expires_at, sub_token, group_id
+            speed_limit_mbps, max_ips, expires_at, sub_token, group_id,
+            protocol, port, fingerprint, alpn, note, config_count, sort_order
         ),
     )
     conn.commit()
@@ -260,6 +276,13 @@ def add_link(
             "expires_at": expires_at,
             "sub_token": sub_token,
             "group_id": group_id,
+            "protocol": protocol,
+            "port": port,
+            "fingerprint": fingerprint,
+            "alpn": alpn,
+            "note": note,
+            "config_count": config_count,
+            "sort_order": sort_order,
             "last_connected_at": None,
         }
         _LINKS_CACHE[uuid] = link_dict
@@ -376,6 +399,13 @@ def update_link(
     expires_at: str | None = ...,
     group_id: int = None,
     sub_token: str = None,
+    protocol: str = None,
+    port: int = None,
+    fingerprint: str = None,
+    alpn: str = None,
+    note: str = None,
+    config_count: int = None,
+    sort_order: int = None,
 ):
     if reset_usage:
         with _CACHE_LOCK:
@@ -413,6 +443,27 @@ def update_link(
     if sub_token is not None:
         updates.append("sub_token=?")
         params.append(sub_token)
+    if protocol is not None:
+        updates.append("protocol=?")
+        params.append(protocol)
+    if port is not None:
+        updates.append("port=?")
+        params.append(int(port))
+    if fingerprint is not None:
+        updates.append("fingerprint=?")
+        params.append(fingerprint)
+    if alpn is not None:
+        updates.append("alpn=?")
+        params.append(alpn)
+    if note is not None:
+        updates.append("note=?")
+        params.append(note)
+    if config_count is not None:
+        updates.append("config_count=?")
+        params.append(int(config_count))
+    if sort_order is not None:
+        updates.append("sort_order=?")
+        params.append(int(sort_order))
 
     if updates:
         params.append(uuid)
@@ -439,6 +490,20 @@ def update_link(
                 link["expires_at"] = expires_at
             if group_id is not None:
                 link["group_id"] = int(group_id)
+            if protocol is not None:
+                link["protocol"] = protocol
+            if port is not None:
+                link["port"] = int(port)
+            if fingerprint is not None:
+                link["fingerprint"] = fingerprint
+            if alpn is not None:
+                link["alpn"] = alpn
+            if note is not None:
+                link["note"] = note
+            if config_count is not None:
+                link["config_count"] = int(config_count)
+            if sort_order is not None:
+                link["sort_order"] = int(sort_order)
             if sub_token is not None:
                 old_tok = link.get("sub_token")
                 if old_tok and old_tok in _SUB_TOKEN_CACHE:
