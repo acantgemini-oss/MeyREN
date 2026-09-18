@@ -8,11 +8,11 @@
   <link rel="icon" type="image/png" href="/static/logo.png">
   <style>
     :root {
-      --portal-bg: #07080e;
-      --portal-card: #0d0f1d;
-      --portal-border: rgba(168, 85, 247, 0.2);
-      --portal-accent: #a855f7;
-      --portal-glow: rgba(168, 85, 247, 0.28);
+      --portal-bg: #060913;
+      --portal-card: #0b1124;
+      --portal-border: rgba(59, 130, 246, 0.2);
+      --portal-accent: #3b82f6;
+      --portal-glow: rgba(37, 99, 235, 0.32);
     }
     body {
       background-color: var(--portal-bg);
@@ -41,14 +41,15 @@
     .brand-header img {
       width: 44px;
       height: 44px;
-      border-radius: 12px;
+      border-radius: 50%;
+      object-fit: cover;
       box-shadow: 0 0 20px var(--portal-glow);
     }
     .brand-title {
       font-size: 20px;
       font-weight: 700;
       letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #c084fc, #a855f7);
+      background: linear-gradient(135deg, #ffffff 15%, #60a5fa 65%, #a855f7 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -96,6 +97,7 @@
       background: linear-gradient(90deg, #10b981, #06b6d4);
       border-radius: 9999px;
       transition: width 0.6s ease;
+      width: var(--pct, 0%);
     }
     .quota-details {
       display: grid;
@@ -119,6 +121,9 @@
       font-size: 14px;
       font-weight: 600;
       color: #f1f5f9;
+    }
+    .quota-item .val.expired {
+      color: #ef4444;
     }
     .sub-box {
       background: #080c14;
@@ -277,7 +282,7 @@
       <span>{{ pct }}%</span>
     </div>
     <div class="quota-meter">
-      <div class="quota-bar" style="width: {{ pct }}%"></div>
+      <div class="quota-bar" style="--pct: {{ pct }}%; width: var(--pct);"></div>
     </div>
 
     <!-- Details Grid -->
@@ -292,7 +297,7 @@
       </div>
       <div class="quota-item">
         <div class="lbl">Expiration</div>
-        <div class="val" style="color: {% if is_expired %}#ef4444{% else %}#f1f5f9{% endif %}">{{ exp_str }}</div>
+        <div class="val {% if is_expired %}expired{% endif %}">{{ exp_str }}</div>
       </div>
     </div>
 
