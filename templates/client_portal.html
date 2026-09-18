@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ link.label }} · MeyREN Gateway Subscription</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" type="image/png" href="/static/logo.png">
+  <style>
+    :root {
+      --portal-bg: #06090e;
+      --portal-card: #0c121d;
+      --portal-border: #1f2d42;
+      --portal-accent: #10b981;
+      --portal-glow: rgba(16, 185, 129, 0.2);
+    }
+    body {
+      background-color: var(--portal-bg);
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .portal-container {
+      width: 100%;
+      max-width: 680px;
+      padding: 24px 16px 48px;
+      box-sizing: border-box;
+    }
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .brand-header img {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px var(--portal-glow);
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .portal-card {
+      background: var(--portal-card);
+      border: 1px solid var(--portal-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .user-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .user-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-active { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-expired { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .quota-meter {
+      height: 10px;
+      background: #182232;
+      border-radius: 9999px;
+      overflow: hidden;
+      margin: 12px 0 8px;
+    }
+    .quota-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #06b6d4);
+      border-radius: 9999px;
+      transition: width 0.6s ease;
+    }
+    .quota-details {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 16px;
+    }
+    .quota-item {
+      text-align: center;
+    }
+    .quota-item .lbl {
+      font-size: 11px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .quota-item .val {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .sub-box {
+      background: #080c14;
+      border: 1px dashed var(--portal-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .sub-url-text {
+      font-family: monospace;
+      font-size: 12px;
+      color: #38bdf8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .btn-app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .btn-app {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #162030;
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid #23344d;
+      transition: all 0.2s;
+    }
+    .btn-app:hover {
+      background: #1e2d44;
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+    }
+    .config-card {
+      background: #080c14;
+      border: 1px solid var(--portal-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .config-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .config-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .config-tag {
+      font-size: 10px;
+      background: #1e293b;
+      color: #94a3b8;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .btn-action-row {
+      display: flex;
+      gap: 8px;
+    }
+    .qr-modal-dialog {
+      background: #0c121d;
+      border: 1px solid #1f2d42;
+      border-radius: 16px;
+      padding: 24px;
+      color: #fff;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+    }
+    .qr-modal-dialog::backdrop {
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+    }
+    .qr-modal-dialog img {
+      width: 220px;
+      height: 220px;
+      border-radius: 12px;
+      margin: 16px 0;
+      background: #fff;
+      padding: 8px;
+    }
+    .alert-banner {
+      background: rgba(14, 165, 233, 0.12);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      color: #38bdf8;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="portal-container">
+  
+  <!-- Brand Header -->
+  <div class="brand-header">
+    <img src="/static/logo.png" alt="MeyREN Logo">
+    <span class="brand-title">MeyREN Subscription Hub</span>
+  </div>
+
+  <!-- Announcement Banners if present -->
+  {% for ann in announcements %}
+  <div class="alert-banner">
+    <span>📢</span>
+    <div>
+      <strong>{{ ann.title }}</strong> — {{ ann.content }}
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- User Account Card -->
+  <div class="portal-card">
+    <div class="user-header">
+      <div>
+        <div class="user-name">{{ link.label }}</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:2px;">UUID: <span style="font-family:monospace">{{ link.uuid[:8] }}...{{ link.uuid[-4:] }}</span></div>
+      </div>
+      <div>
+        {% if is_expired %}
+          <span class="badge badge-expired">● Expired</span>
+        {% elif not link.active %}
+          <span class="badge badge-expired">● Suspended</span>
+        {% else %}
+          <span class="badge badge-active">● Active Node</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Quota Meter -->
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8">
+      <span>Consumed: <strong>{{ used_str }}</strong></span>
+      <span>{{ pct }}%</span>
+    </div>
+    <div class="quota-meter">
+      <div class="quota-bar" style="width: {{ pct }}%"></div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="quota-details">
+      <div class="quota-item">
+        <div class="lbl">Total Quota</div>
+        <div class="val">{{ limit_str }}</div>
+      </div>
+      <div class="quota-item">
+        <div class="lbl">Remaining</div>
+        <div class="val" style="color:#10b981">{{ rem_str }}</div>
+      </div>
+      <div class="quota-item">
+        <div class="lbl">Expiration</div>
+        <div class="val" style="color: {% if is_expired %}#ef4444{% else %}#f1f5f9{% endif %}">{{ exp_str }}</div>
+      </div>
+    </div>
+
+    {% if link.speed_limit_mbps > 0 or link.max_ips > 0 %}
+    <div style="display:flex;gap:12px;margin-top:14px;font-size:12px;color:#94a3b8;background:#080c14;padding:8px 12px;border-radius:8px">
+      {% if link.speed_limit_mbps > 0 %}
+      <div>⚡ Speed Limit: <strong style="color:#38bdf8">{{ link.speed_limit_mbps }} Mbps</strong></div>
+      {% endif %}
+      {% if link.max_ips > 0 %}
+      <div>📱 Max Devices: <strong style="color:#38bdf8">{{ link.max_ips }} concurrent IPs</strong></div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- 1-Click Subscription Import -->
+    <div style="margin-top:20px">
+      <div style="font-size:13px;font-weight:600;color:#cbd5e1;margin-bottom:6px">⚡ 1-Click Import into Client Apps:</div>
+      <div class="btn-app-grid">
+        <a href="v2rayng://install-config?url={{ sub_url }}" class="btn-app">v2rayNG</a>
+        <a href="sing-box://import-remote-profile?url={{ sub_url }}#MeyREN" class="btn-app">Sing-box</a>
+        <a href="clash://install-config?url={{ sub_url }}&name=MeyREN" class="btn-app">Clash Meta</a>
+        <a href="shadowrocket://add/sub://{{ sub_url }}?title=MeyREN" class="btn-app">Shadowrocket</a>
+      </div>
+    </div>
+
+    <!-- Universal Subscription URL Box -->
+    <div style="margin-top:16px">
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Universal Subscription Link (Base64 / Auto):</div>
+      <div class="sub-box">
+        <span class="sub-url-text" id="sub-url-val">{{ sub_url }}</span>
+        <button class="btn btn-secondary btn-sm" onclick="copyText('{{ sub_url }}', this)" style="padding:4px 10px;font-size:11px">Copy Link</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Config Profiles List -->
+  <div style="font-size:15px;font-weight:700;color:#f1f5f9;margin:24px 0 12px">Available Protocol Profiles</div>
+
+  {% for cfg in configs %}
+  <div class="config-card">
+    <div class="config-header">
+      <div class="config-title">
+        <span>{{ cfg.name }}</span>
+        <span class="config-tag">{{ cfg.transport }}</span>
+      </div>
+      <div class="btn-action-row">
+        <button class="btn btn-secondary btn-sm" onclick="showQR('{{ cfg.uri }}', '{{ cfg.name }}')" style="padding:4px 8px;font-size:11px">QR</button>
+        <button class="btn btn-primary btn-sm" onclick="copyText('{{ cfg.uri }}', this)" style="padding:4px 10px;font-size:11px">Copy</button>
+      </div>
+    </div>
+    <div style="font-family:monospace;font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#04060a;padding:6px 10px;border-radius:6px">
+      {{ cfg.uri }}
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+<!-- QR Modal -->
+<dialog id="portal-qr-modal" class="qr-modal-dialog">
+  <div style="font-weight:700;font-size:16px" id="portal-qr-title">Scan QR Code</div>
+  <img id="portal-qr-img" src="" alt="QR Code">
+  <div style="display:flex;gap:10px;justify-content:center">
+    <button class="btn btn-secondary btn-sm" onclick="document.getElementById('portal-qr-modal').close()">Close</button>
+  </div>
+</dialog>
+
+<script>
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.innerText;
+    btn.innerText = 'Copied! ✓';
+    btn.style.color = '#10b981';
+    setTimeout(() => {
+      btn.innerText = orig;
+      btn.style.color = '';
+    }, 2000);
+  });
+}
+
+function showQR(uri, title) {
+  document.getElementById('portal-qr-title').innerText = title;
+  document.getElementById('portal-qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(uri);
+  document.getElementById('portal-qr-modal').showModal();
+}
+</script>
+
+</body>
+</html>

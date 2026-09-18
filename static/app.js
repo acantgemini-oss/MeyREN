@@ -323,7 +323,13 @@ function switchPage(id) {
   $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === id));
   $('#sidebar').classList.remove('open');
   $('#sidebar-overlay').classList.remove('show');
+
+  if (id === 'groups') loadCategories();
+  else if (id === 'announcements') loadAnnouncements();
+  else if (id === 'admins') loadAdmins();
+  else if (id === 'audit-logs') loadAuditLogs();
 }
+
 
 function toast(msg, err = false) {
   const t = $('#toast');
@@ -459,6 +465,18 @@ function renderLinks(links) {
     const row = document.importNode(rowTpl, true);
     row.querySelector('.col-id').textContent = i;
     row.querySelector('.col-name').textContent = l.label;
+    
+    // Group Pill
+    const rGPill = row.querySelector('.col-group-pill');
+    if (rGPill) {
+      if (l.group_name) {
+        rGPill.textContent = l.group_name;
+        rGPill.style.display = 'inline-block';
+      } else {
+        rGPill.style.display = 'none';
+      }
+    }
+
     const dPill = row.querySelector('.col-domain-pill');
     if (dPill) {
       const linkDomain = l.domain || defaultDomain || location.host;
@@ -466,6 +484,44 @@ function renderLinks(links) {
       dPill.title = 'Domain: ' + linkDomain;
       if (linkDomain === defaultDomain) dPill.classList.add('tag-domain-default');
     }
+
+    // Speed Pill
+    const rSPill = row.querySelector('.col-speed-pill');
+    if (rSPill) {
+      if (l.speed_limit_mbps && l.speed_limit_mbps > 0) {
+        rSPill.textContent = `${l.speed_limit_mbps} Mbps`;
+        rSPill.style.display = 'inline-block';
+      } else {
+        rSPill.style.display = 'none';
+      }
+    }
+
+    // Max IPs Pill
+    const rIpPill = row.querySelector('.col-ips-pill');
+    if (rIpPill) {
+      if (l.max_ips && l.max_ips > 0) {
+        rIpPill.textContent = `Max ${l.max_ips} IP`;
+        rIpPill.style.display = 'inline-block';
+      } else {
+        rIpPill.style.display = 'none';
+      }
+    }
+
+    // Expiration Pill
+    const rExpPill = row.querySelector('.col-expire-pill');
+    if (rExpPill) {
+      if (l.expires_at) {
+        const expDate = new Date(l.expires_at);
+        const isPast = expDate < new Date();
+        const daysLeft = Math.ceil((expDate - new Date()) / 86400000);
+        rExpPill.textContent = isPast ? (lang === 'fa' ? 'منقضی' : 'Expired') : (lang === 'fa' ? `${daysLeft} روز مانده` : `${daysLeft}d left`);
+        rExpPill.style.display = 'inline-block';
+        if (isPast) rExpPill.classList.add('badge-expired');
+      } else {
+        rExpPill.style.display = 'none';
+      }
+    }
+
     row.querySelector('.col-used').innerHTML = `<bdi>${uF}</bdi>`;
     row.querySelector('.col-limit').innerHTML = `<bdi>${lF}</bdi>`;
     row.querySelector('.col-fill').style.width = pct + '%';
@@ -485,6 +541,14 @@ function renderLinks(links) {
     rToggle.dataset.uid = l.uuid;
     rToggle.onclick = function() { toggleLink(this); };
 
+    const rPortal = row.querySelector('.act-portal');
+    if (rPortal) {
+      rPortal.onclick = function() {
+        if (l.sub_token) window.open(`/client/${l.sub_token}`, '_blank');
+        else toast('No token generated', true);
+      };
+    }
+
     row.querySelector('.act-copy').onclick = function() { copyLinkText(l.vless_link, this); };
     row.querySelector('.act-qr').onclick = function() { showQRText(l.vless_link, l.label); };
     row.querySelector('.act-topup').onclick = function() { topUpLink(l.uuid, 1.0); };
@@ -497,6 +561,18 @@ function renderLinks(links) {
     const card = document.importNode(cardTpl, true);
     card.querySelector('.col-id').textContent = '#' + i;
     card.querySelector('.col-name').textContent = l.label;
+    
+    // Mobile Group Pill
+    const cGPill = card.querySelector('.col-group-pill');
+    if (cGPill) {
+      if (l.group_name) {
+        cGPill.textContent = l.group_name;
+        cGPill.style.display = 'inline-block';
+      } else {
+        cGPill.style.display = 'none';
+      }
+    }
+
     const cDPill = card.querySelector('.col-domain-pill');
     if (cDPill) {
       const linkDomain = l.domain || defaultDomain || location.host;
@@ -504,6 +580,44 @@ function renderLinks(links) {
       cDPill.title = 'Domain: ' + linkDomain;
       if (linkDomain === defaultDomain) cDPill.classList.add('tag-domain-default');
     }
+
+    // Mobile Speed Pill
+    const cSPill = card.querySelector('.col-speed-pill');
+    if (cSPill) {
+      if (l.speed_limit_mbps && l.speed_limit_mbps > 0) {
+        cSPill.textContent = `${l.speed_limit_mbps} Mbps`;
+        cSPill.style.display = 'inline-block';
+      } else {
+        cSPill.style.display = 'none';
+      }
+    }
+
+    // Mobile Max IPs Pill
+    const cIpPill = card.querySelector('.col-ips-pill');
+    if (cIpPill) {
+      if (l.max_ips && l.max_ips > 0) {
+        cIpPill.textContent = `Max ${l.max_ips} IP`;
+        cIpPill.style.display = 'inline-block';
+      } else {
+        cIpPill.style.display = 'none';
+      }
+    }
+
+    // Mobile Expiration Pill
+    const cExpPill = card.querySelector('.col-expire-pill');
+    if (cExpPill) {
+      if (l.expires_at) {
+        const expDate = new Date(l.expires_at);
+        const isPast = expDate < new Date();
+        const daysLeft = Math.ceil((expDate - new Date()) / 86400000);
+        cExpPill.textContent = isPast ? (lang === 'fa' ? 'منقضی' : 'Expired') : (lang === 'fa' ? `${daysLeft} روز مانده` : `${daysLeft}d left`);
+        cExpPill.style.display = 'inline-block';
+        if (isPast) cExpPill.classList.add('badge-expired');
+      } else {
+        cExpPill.style.display = 'none';
+      }
+    }
+
     card.querySelector('.col-used').innerHTML = `<bdi>${uF}</bdi>`;
     card.querySelector('.col-limit').innerHTML = `<bdi>${lF}</bdi>`;
     card.querySelector('.col-fill').style.width = pct + '%';
@@ -513,6 +627,14 @@ function renderLinks(links) {
     cToggle.className = 'act-toggle toggle ' + (l.active ? 'on' : '');
     cToggle.dataset.uid = l.uuid;
     cToggle.onclick = function() { toggleLink(this); };
+
+    const cPortal = card.querySelector('.act-portal');
+    if (cPortal) {
+      cPortal.onclick = function() {
+        if (l.sub_token) window.open(`/client/${l.sub_token}`, '_blank');
+        else toast('No token generated', true);
+      };
+    }
 
     card.querySelector('.act-copy').onclick = function() { copyLinkText(l.vless_link, this); };
     card.querySelector('.act-qr').onclick = function() { showQRText(l.vless_link, l.label); };
@@ -601,6 +723,12 @@ async function createLink() {
   const val = parseFloat($('#new-limit').value) || 0;
   const unit = $('#new-unit').value || 'GB';
   const domain = $('#new-domain')?.value || defaultDomain;
+  const speed = parseFloat($('#new-speed')?.value) || 0;
+  const maxIps = parseInt($('#new-max-ips')?.value, 10) || 0;
+  const days = parseInt($('#new-days')?.value, 10) || 0;
+  const rawGroup = $('#new-group')?.value;
+  const groupId = rawGroup ? parseInt(rawGroup, 10) : null;
+
   if (!/^[a-zA-Z0-9\-_. ]+$/.test(label)) {
     toast('Only English letters and numbers allowed in remark', true);
     return;
@@ -609,12 +737,24 @@ async function createLink() {
     const r = await fetch('/api/links', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ label, limit_value: val, limit_unit: unit, domain })
+      body: JSON.stringify({
+        label,
+        limit_value: val,
+        limit_unit: unit,
+        domain,
+        speed_limit_mbps: speed,
+        max_ips: maxIps,
+        days: days,
+        group_id: groupId
+      })
     });
     if (!r.ok) throw new Error();
     toast('Created successfully');
     $('#new-label').value = '';
     $('#new-limit').value = '';
+    if ($('#new-speed')) $('#new-speed').value = '0';
+    if ($('#new-max-ips')) $('#new-max-ips').value = '0';
+    if ($('#new-days')) $('#new-days').value = '0';
     $('#add-modal').close();
     await loadLinks();
     await loadStats();
@@ -629,6 +769,10 @@ function openEditModal(l) {
   const gb = (l.limit_bytes || 0) / (1024 * 1024 * 1024);
   $('#edit-limit').value = gb > 0 ? (gb % 1 === 0 ? gb.toFixed(0) : gb.toFixed(1)) : 0;
   $('#edit-reset-usage').checked = false;
+  if ($('#edit-speed')) $('#edit-speed').value = l.speed_limit_mbps || 0;
+  if ($('#edit-max-ips')) $('#edit-max-ips').value = l.max_ips || 0;
+  if ($('#edit-days')) $('#edit-days').value = '';
+  if ($('#edit-group')) $('#edit-group').value = l.group_id || '';
   if ($('#edit-domain')) {
     const linkDomain = l.domain || defaultDomain;
     if (linkDomain && !allDomains.includes(linkDomain)) {
@@ -646,18 +790,31 @@ async function saveEdit() {
   const limitVal = parseFloat($('#edit-limit').value) || 0;
   const resetUsage = $('#edit-reset-usage').checked;
   const domain = $('#edit-domain')?.value || defaultDomain;
+  const speed = parseFloat($('#edit-speed')?.value) || 0;
+  const maxIps = parseInt($('#edit-max-ips')?.value, 10) || 0;
+  const rawDays = $('#edit-days')?.value;
+  const days = rawDays !== '' && !isNaN(parseInt(rawDays, 10)) ? parseInt(rawDays, 10) : undefined;
+  const rawGroup = $('#edit-group')?.value;
+  const groupId = rawGroup ? parseInt(rawGroup, 10) : null;
 
   try {
+    const payload = {
+      label,
+      limit_value: limitVal,
+      limit_unit: 'GB',
+      reset_usage: resetUsage,
+      domain,
+      speed_limit_mbps: speed,
+      max_ips: maxIps,
+      group_id: groupId
+    };
+    if (days !== undefined) {
+      payload.days = days;
+    }
     const r = await fetch(`/api/links/${uid}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        label,
-        limit_value: limitVal,
-        limit_unit: 'GB',
-        reset_usage: resetUsage,
-        domain
-      })
+      body: JSON.stringify(payload)
     });
     if (!r.ok) throw new Error();
     toast('Saved changes');
@@ -1071,6 +1228,392 @@ function openDomainsModal() {
   $('#domains-modal').showModal();
 }
 
+// ----------------------------------------------------
+// GROUPS / CATEGORIES & CONFIG MIXER
+// ----------------------------------------------------
+let allCategories = [];
+
+async function loadCategories() {
+  try {
+    const r = await fetch('/api/categories');
+    if (!r.ok) return;
+    const d = await r.json();
+    allCategories = d.categories || [];
+    renderCategories();
+    updateCategorySelects();
+  } catch (e) {}
+}
+
+function updateCategorySelects() {
+  const opts = `<option value="">None (Default)</option>` + allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  if ($('#new-group')) $('#new-group').innerHTML = opts;
+  if ($('#edit-group')) $('#edit-group').innerHTML = opts;
+}
+
+function renderCategories() {
+  const tbody = $('#groups-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!allCategories.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text3)">No groups defined yet</td></tr>`;
+    return;
+  }
+  allCategories.forEach(cat => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:var(--text3);font-size:12px;font-weight:700">#${cat.id}</td>
+      <td style="font-weight:700;color:var(--text)">${cat.name}</td>
+      <td style="color:var(--text2);font-size:12px">${cat.description || '--'}</td>
+      <td><span class="badge-group">${cat.node_count || 0} nodes</span></td>
+      <td style="text-align:right">
+        <div style="display:inline-flex;gap:6px;align-items:center;justify-content:flex-end">
+          <button class="btn btn-primary btn-sm btn-copy-group-sub" data-id="${cat.id}">Mixer Sub</button>
+          <button class="btn btn-danger btn-sm btn-del-group" data-id="${cat.id}">&#x2715;</button>
+        </div>
+      </td>
+    `;
+    tr.querySelector('.btn-copy-group-sub').onclick = function() {
+      const mixUrl = `${location.origin}/sub/mix/${cat.id}`;
+      copyLinkText(mixUrl, this);
+    };
+    tr.querySelector('.btn-del-group').onclick = function() {
+      deleteCategory(cat.id);
+    };
+    tbody.appendChild(tr);
+  });
+}
+
+async function addCategory() {
+  const name = $('#new-group-name')?.value.trim();
+  const desc = $('#new-group-desc')?.value.trim();
+  if (!name) {
+    toast('Please enter a group name', true);
+    return;
+  }
+  try {
+    const r = await fetch('/api/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, description: desc })
+    });
+    if (!r.ok) throw new Error();
+    toast('Group created');
+    if ($('#new-group-name')) $('#new-group-name').value = '';
+    if ($('#new-group-desc')) $('#new-group-desc').value = '';
+    $('#group-modal').close();
+    await loadCategories();
+    await loadLinks();
+  } catch (e) {
+    toast('Failed to create group', true);
+  }
+}
+
+async function deleteCategory(id) {
+  if (!confirm('Are you sure you want to delete this group?')) return;
+  try {
+    const r = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+    if (!r.ok) throw new Error();
+    toast('Group deleted');
+    await loadCategories();
+    await loadLinks();
+  } catch (e) {
+    toast('Failed to delete group', true);
+  }
+}
+
+// ----------------------------------------------------
+// ANNOUNCEMENTS
+// ----------------------------------------------------
+let allAnnouncements = [];
+
+async function loadAnnouncements() {
+  try {
+    const r = await fetch('/api/announcements');
+    if (!r.ok) return;
+    const d = await r.json();
+    allAnnouncements = d.announcements || [];
+    renderAnnouncements();
+  } catch (e) {}
+}
+
+function renderAnnouncements() {
+  const container = $('#announcements-container');
+  if (!container) return;
+  container.innerHTML = '';
+  if (!allAnnouncements.length) {
+    container.innerHTML = `<div class="card" style="text-align:center;padding:24px;color:var(--text3)">No announcements posted yet</div>`;
+    return;
+  }
+  allAnnouncements.forEach(ann => {
+    const card = document.createElement('div');
+    card.className = 'card announcement-card';
+    const lvlClass = ann.level === 'critical' ? 'tag-warning' : ann.level === 'warning' ? 'tag-warning' : 'tag-active';
+    const dateStr = ann.created_at ? new Date(ann.created_at).toLocaleString() : '';
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="tag ${lvlClass}" style="text-transform:uppercase">${ann.level}</span>
+          <span style="font-weight:700;font-size:14px;color:var(--text)">${ann.title}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:11px;color:var(--text3)">${dateStr}</span>
+          <button class="btn btn-secondary btn-sm btn-ann-toggle" data-id="${ann.id}">${ann.active ? 'Active' : 'Inactive'}</button>
+          <button class="btn btn-danger btn-sm btn-ann-del" data-id="${ann.id}">&#x2715;</button>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;white-space:pre-wrap">${ann.content}</div>
+    `;
+    card.querySelector('.btn-ann-toggle').onclick = async function() {
+      try {
+        await fetch(`/api/announcements/${ann.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ active: !ann.active })
+        });
+        loadAnnouncements();
+      } catch (e) {}
+    };
+    card.querySelector('.btn-ann-del').onclick = async function() {
+      if (!confirm('Delete this announcement?')) return;
+      try {
+        await fetch(`/api/announcements/${ann.id}`, { method: 'DELETE' });
+        loadAnnouncements();
+      } catch (e) {}
+    };
+    container.appendChild(card);
+  });
+}
+
+async function addAnnouncement() {
+  const title = $('#new-ann-title')?.value.trim();
+  const level = $('#new-ann-level')?.value || 'info';
+  const content = $('#new-ann-content')?.value.trim();
+  if (!title || !content) {
+    toast('Please fill all announcement fields', true);
+    return;
+  }
+  try {
+    const r = await fetch('/api/announcements', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, level, content, active: true })
+    });
+    if (!r.ok) throw new Error();
+    toast('Announcement published');
+    if ($('#new-ann-title')) $('#new-ann-title').value = '';
+    if ($('#new-ann-content')) $('#new-ann-content').value = '';
+    $('#announcement-modal').close();
+    await loadAnnouncements();
+  } catch (e) {
+    toast('Failed to publish announcement', true);
+  }
+}
+
+// ----------------------------------------------------
+// ADMINISTRATORS & RBAC
+// ----------------------------------------------------
+let allAdmins = [];
+
+async function loadAdmins() {
+  try {
+    const r = await fetch('/api/admins');
+    if (!r.ok) return;
+    const d = await r.json();
+    allAdmins = d.admins || [];
+    renderAdmins();
+  } catch (e) {}
+}
+
+function renderAdmins() {
+  const tbody = $('#admins-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  allAdmins.forEach(adm => {
+    const tr = document.createElement('tr');
+    const perms = Array.isArray(adm.permissions) ? adm.permissions.join(', ') : (adm.permissions || 'all');
+    tr.innerHTML = `
+      <td style="font-weight:700;color:var(--text)">${adm.username}</td>
+      <td><span class="role-badge role-${adm.role}">${adm.role}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${perms}</td>
+      <td><span class="tag ${adm.active ? 'tag-active' : 'tag-disabled'}">${adm.active ? 'Active' : 'Disabled'}</span></td>
+      <td style="text-align:right">
+        ${adm.role !== 'superadmin' ? `
+          <button class="btn btn-secondary btn-sm btn-toggle-admin" data-id="${adm.id}">${adm.active ? 'Disable' : 'Enable'}</button>
+          <button class="btn btn-danger btn-sm btn-del-admin" data-id="${adm.id}">&#x2715;</button>
+        ` : '<span style="font-size:11px;color:var(--text3)">Primary</span>'}
+      </td>
+    `;
+    const toggleBtn = tr.querySelector('.btn-toggle-admin');
+    if (toggleBtn) {
+      toggleBtn.onclick = async function() {
+        await fetch(`/api/admins/${adm.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ active: !adm.active })
+        });
+        loadAdmins();
+      };
+    }
+    const delBtn = tr.querySelector('.btn-del-admin');
+    if (delBtn) {
+      delBtn.onclick = async function() {
+        if (!confirm(`Delete admin ${adm.username}?`)) return;
+        await fetch(`/api/admins/${adm.id}`, { method: 'DELETE' });
+        loadAdmins();
+      };
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+async function addAdmin() {
+  const username = $('#new-admin-user')?.value.trim();
+  const password = $('#new-admin-pw')?.value.trim();
+  const role = $('#new-admin-role')?.value || 'admin';
+  const perms = [];
+  if ($('#perm-manage-users')?.checked) perms.push('manage_users');
+  if ($('#perm-view-stats')?.checked) perms.push('view_stats');
+  if ($('#perm-view-logs')?.checked) perms.push('view_logs');
+  if ($('#perm-manage-admins')?.checked) perms.push('manage_admins');
+
+  if (!username || !password) {
+    toast('Username and password required', true);
+    return;
+  }
+  try {
+    const r = await fetch('/api/admins', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, role, permissions: perms })
+    });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed');
+    }
+    toast('Admin created');
+    if ($('#new-admin-user')) $('#new-admin-user').value = '';
+    if ($('#new-admin-pw')) $('#new-admin-pw').value = '';
+    $('#admin-modal').close();
+    await loadAdmins();
+  } catch (e) {
+    toast(e.message || 'Failed to add admin', true);
+  }
+}
+
+// ----------------------------------------------------
+// AUDIT LOGS
+// ----------------------------------------------------
+let allAuditLogs = [];
+
+async function loadAuditLogs() {
+  const tbody = $('#audit-logs-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:16px;color:var(--text3)">Loading audit logs...</td></tr>`;
+  try {
+    const r = await fetch('/api/audit-logs');
+    if (!r.ok) return;
+    const d = await r.json();
+    allAuditLogs = d.logs || [];
+    renderAuditLogs();
+  } catch (e) {}
+}
+
+function renderAuditLogs() {
+  const tbody = $('#audit-logs-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!allAuditLogs.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:16px;color:var(--text3)">No audit logs recorded yet</td></tr>`;
+    return;
+  }
+  allAuditLogs.forEach(lg => {
+    const tr = document.createElement('tr');
+    const dateStr = lg.created_at ? new Date(lg.created_at).toLocaleString() : '--';
+    tr.innerHTML = `
+      <td style="font-size:11px;color:var(--text3)">${dateStr}</td>
+      <td style="font-weight:700;color:var(--neon-purple)">${lg.admin_username || 'system'}</td>
+      <td><span class="tag tag-vless" style="font-size:10px">${lg.action}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${lg.target || '--'}</td>
+      <td style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">${lg.ip_address || '--'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ----------------------------------------------------
+// NETWORK TOOLS & BENCHMARK
+// ----------------------------------------------------
+async function runPing() {
+  const host = $('#ping-host')?.value.trim();
+  const port = parseInt($('#ping-port')?.value, 10) || 443;
+  const resEl = $('#ping-result');
+  if (!host) {
+    toast('Please enter a host or IP', true);
+    return;
+  }
+  resEl.textContent = 'Pinging...';
+  resEl.style.color = 'var(--text3)';
+  try {
+    const r = await fetch('/api/tools/ping', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ host, port })
+    });
+    const d = await r.json();
+    if (d.success) {
+      resEl.textContent = `✓ ${d.latency_ms} ms`;
+      resEl.style.color = d.latency_ms < 120 ? 'var(--green)' : d.latency_ms < 250 ? 'var(--yellow)' : 'var(--red)';
+    } else {
+      resEl.textContent = `✗ Unreachable (${d.error || 'Timeout'})`;
+      resEl.style.color = 'var(--red)';
+    }
+  } catch (e) {
+    resEl.textContent = '✗ Error executing ping';
+    resEl.style.color = 'var(--red)';
+  }
+}
+
+async function benchmarkCleanIps() {
+  const container = $('#clean-ips-container');
+  if (!container) return;
+  container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text3)">Running concurrent latency benchmark against Cloudflare clean IP ranges...</div>`;
+  try {
+    const r = await fetch('/api/tools/clean-ips', { method: 'POST' });
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    const results = d.results || [];
+    container.innerHTML = '';
+    if (!results.length) {
+      container.innerHTML = `<div style="color:var(--text3)">No response from tested ranges.</div>`;
+      return;
+    }
+    results.forEach(res => {
+      const item = document.createElement('div');
+      item.className = 'clean-ip-card';
+      const col = res.latency_ms < 100 ? 'var(--green)' : res.latency_ms < 200 ? 'var(--yellow)' : 'var(--red)';
+      item.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:var(--font-mono);font-weight:700;font-size:13px">${res.ip}</span>
+          <span style="font-weight:700;font-size:12px;color:${col}">${res.latency_ms} ms</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <span style="font-size:10px;color:var(--text3)">Port 443 TCP</span>
+          <button class="btn btn-secondary btn-sm btn-copy-ip" data-ip="${res.ip}">Copy IP</button>
+        </div>
+      `;
+      item.querySelector('.btn-copy-ip').onclick = function() {
+        copyLinkText(res.ip, this);
+      };
+      container.appendChild(item);
+    });
+  } catch (e) {
+    container.innerHTML = `<div style="color:var(--red)">Benchmark failed to run.</div>`;
+  }
+}
+
+// ----------------------------------------------------
+// UI EVENT LISTENERS
+// ----------------------------------------------------
 $('#btn-domains-modal')?.addEventListener('click', openDomainsModal);
 $('#stat-domain-card')?.addEventListener('click', openDomainsModal);
 $('#btn-add-modal-manage-domains')?.addEventListener('click', openDomainsModal);
@@ -1087,6 +1630,32 @@ $('#btn-copy-sub')?.addEventListener('click', function() { copyLinkText($('#sub-
 $('#btn-qr-sub')?.addEventListener('click', () => showQRText($('#sub-url-box').textContent, 'Subscription QR'));
 $('#btn-open-sub-txt')?.addEventListener('click', downloadSubTxt);
 
+// Groups
+$('#btn-add-group')?.addEventListener('click', () => $('#group-modal').showModal());
+$('#group-modal-close')?.addEventListener('click', () => $('#group-modal').close());
+$('#add-group-form')?.addEventListener('submit', (e) => { e.preventDefault(); addCategory(); });
+$('#btn-save-group')?.addEventListener('click', addCategory);
+
+// Announcements
+$('#btn-add-announcement')?.addEventListener('click', () => $('#announcement-modal').showModal());
+$('#announcement-modal-close')?.addEventListener('click', () => $('#announcement-modal').close());
+$('#add-announcement-form')?.addEventListener('submit', (e) => { e.preventDefault(); addAnnouncement(); });
+$('#btn-save-announcement')?.addEventListener('click', addAnnouncement);
+
+// Admins
+$('#btn-add-admin')?.addEventListener('click', () => $('#admin-modal').showModal());
+$('#admin-modal-close')?.addEventListener('click', () => $('#admin-modal').close());
+$('#add-admin-form')?.addEventListener('submit', (e) => { e.preventDefault(); addAdmin(); });
+$('#btn-save-admin')?.addEventListener('click', addAdmin);
+
+// Logs
+$('#btn-refresh-logs')?.addEventListener('click', loadAuditLogs);
+
+// Tools
+$('#btn-run-ping')?.addEventListener('click', runPing);
+$('#ping-host')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') runPing(); });
+$('#btn-benchmark-clean-ips')?.addEventListener('click', benchmarkCleanIps);
+
 // Initialize
 applyTheme(theme);
 setLang(lang);
@@ -1102,4 +1671,5 @@ initConsumersChart();
 loadDomains();
 loadStats();
 loadLinks();
-setInterval(loadStats, 10000);
+loadCategories();
+setInterval(loadStats, 10000);

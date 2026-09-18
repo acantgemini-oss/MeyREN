@@ -50,11 +50,31 @@
       <span data-en="Inbounds" data-fa="اینباندها">Inbounds</span>
       <span class="nav-badge" id="links-badge">0</span>
     </button>
+    <button class="nav-item" data-page="groups">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span data-en="Groups & Mixer" data-fa="دسته‌ها و ترکیب">Groups & Mixer</span>
+    </button>
     <button class="nav-item" data-page="traffic">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       <span data-en="Traffic" data-fa="ترافیک">Traffic</span>
     </button>
+    <button class="nav-item" data-page="announcements">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span data-en="Announcements" data-fa="اطلاعیه‌ها">Announcements</span>
+    </button>
     <div class="nav-section" data-en="System" data-fa="سیستم">System</div>
+    <button class="nav-item" data-page="admins">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span data-en="Admins & RBAC" data-fa="مدیران و دسترسی">Admins & RBAC</span>
+    </button>
+    <button class="nav-item" data-page="audit-logs">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span data-en="Audit Logs" data-fa="گزارش عملیات">Audit Logs</span>
+    </button>
+    <button class="nav-item" data-page="tools">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span data-en="Network Tools" data-fa="ابزارهای شبکه">Network Tools</span>
+    </button>
     <button class="nav-item" data-page="security">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       <span data-en="Security" data-fa="امنیت">Security</span>
@@ -250,6 +270,133 @@
     </div>
   </section>
 
+  <!-- GROUPS PAGE -->
+  <section class="page" id="page-groups">
+    <div class="page-header">
+      <div>
+        <div class="page-title" data-en="Groups & Mixer" data-fa="دسته‌ها و ترکیب کانفیگ">Groups & Mixer</div>
+        <div class="page-sub" data-en="Organize nodes and create combined subscription bundles" data-fa="دسته‌بندی اینباندها و ساخت لینک‌های اشتراک ترکیبی">Organize nodes and create combined subscription bundles</div>
+      </div>
+      <div>
+        <button class="btn btn-primary" id="btn-add-group" data-en="+ Add Group" data-fa="+ دسته جدید">+ Add Group</button>
+      </div>
+    </div>
+    <div class="card" style="border-radius:14px;overflow:hidden;padding:0">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr>
+            <th style="width:50px">ID</th>
+            <th data-en="Group Name" data-fa="نام دسته">Group Name</th>
+            <th data-en="Description" data-fa="توضیحات">Description</th>
+            <th style="width:120px" data-en="Nodes" data-fa="تعداد نودها">Nodes</th>
+            <th style="width:200px;text-align:right" data-en="Actions" data-fa="عملیات">Actions</th>
+          </tr></thead>
+          <tbody id="groups-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANNOUNCEMENTS PAGE -->
+  <section class="page" id="page-announcements">
+    <div class="page-header">
+      <div>
+        <div class="page-title" data-en="Announcements" data-fa="اطلاعیه‌ها و اخبار">Announcements</div>
+        <div class="page-sub" data-en="Broadcast system alerts to admin dashboard and user client portal" data-fa="پیام‌های سیستمی برای پنل مدیریت و پورتال کاربران">Broadcast system alerts to admin dashboard and user client portal</div>
+      </div>
+      <div>
+        <button class="btn btn-primary" id="btn-add-announcement" data-en="+ New Announcement" data-fa="+ اطلاعیه جدید">+ New Announcement</button>
+      </div>
+    </div>
+    <div id="announcements-container" style="display:flex;flex-direction:column;gap:12px"></div>
+  </section>
+
+  <!-- ADMINS RBAC PAGE -->
+  <section class="page" id="page-admins">
+    <div class="page-header">
+      <div>
+        <div class="page-title" data-en="Administrators & RBAC" data-fa="مدیران و کنترل دسترسی">Administrators & RBAC</div>
+        <div class="page-sub" data-en="Manage panel sub-admins and assign granular permissions" data-fa="مدیریت ادمین‌ها و سطوح دسترسی">Manage panel sub-admins and assign granular permissions</div>
+      </div>
+      <div>
+        <button class="btn btn-primary" id="btn-add-admin" data-en="+ Add Admin" data-fa="+ افزودن مدیر">+ Add Admin</button>
+      </div>
+    </div>
+    <div class="card" style="border-radius:14px;overflow:hidden;padding:0">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Permissions</th>
+            <th>Status</th>
+            <th style="text-align:right">Actions</th>
+          </tr></thead>
+          <tbody id="admins-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUDIT LOGS PAGE -->
+  <section class="page" id="page-audit-logs">
+    <div class="page-header">
+      <div>
+        <div class="page-title" data-en="Audit Logs" data-fa="گزارش رویدادها">Audit Logs</div>
+        <div class="page-sub" data-en="Security trace of administrative operations" data-fa="ردیابی امنیتی فعالیت‌های مدیران">Security trace of administrative operations</div>
+      </div>
+      <div>
+        <button class="btn btn-secondary btn-sm" id="btn-refresh-logs" data-en="Refresh" data-fa="بروزرسانی">Refresh</button>
+      </div>
+    </div>
+    <div class="card" style="border-radius:14px;overflow:hidden;padding:0">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr>
+            <th style="width:170px">Timestamp</th>
+            <th style="width:110px">Admin</th>
+            <th style="width:130px">Action</th>
+            <th>Target</th>
+            <th style="width:120px">IP Address</th>
+          </tr></thead>
+          <tbody id="audit-logs-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NETWORK TOOLS PAGE -->
+  <section class="page" id="page-tools">
+    <div class="page-header">
+      <div>
+        <div class="page-title" data-en="Network Tools & Clean IPs" data-fa="ابزارهای شبکه و آی‌پی سالم">Network Tools & Clean IPs</div>
+        <div class="page-sub" data-en="Latency diagnostics and Cloudflare clean IP auditor" data-fa="تست تاخیر پینگ و جستجوی آی‌پی تمیز کلودفلر">Latency diagnostics and Cloudflare clean IP auditor</div>
+      </div>
+    </div>
+
+    <!-- Quick Ping -->
+    <div class="card" style="margin-bottom:18px">
+      <div class="card-header"><div class="card-title">TCP Latency Ping</div></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <input class="form-input" id="ping-host" placeholder="Host (e.g. 1.1.1.1 or domain)" style="flex:2;min-width:180px">
+        <input class="form-input" id="ping-port" type="number" value="443" style="width:90px">
+        <button class="btn btn-primary" id="btn-run-ping">Test Ping</button>
+        <span id="ping-result" style="font-size:13px;font-weight:700"></span>
+      </div>
+    </div>
+
+    <!-- Clean IP Benchmark -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Cloudflare Clean IP Benchmark</div>
+        <button class="btn btn-secondary btn-sm" id="btn-benchmark-clean-ips">Run Benchmark</button>
+      </div>
+      <div id="clean-ips-container" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:12px;margin-top:12px">
+        <div style="color:var(--text3);font-size:13px">Click 'Run Benchmark' to test candidate clean IPs.</div>
+      </div>
+    </div>
+  </section>
+
   <!-- SECURITY PAGE -->
   <section class="page" id="page-security">
     <div class="page-header"><div><div class="page-title" data-en="Security" data-fa="امنیت">Security</div><div class="page-sub" data-en="Change panel password" data-fa="تغییر رمز عبور کنترل‌پنل">Change panel password</div></div></div>
@@ -280,12 +427,18 @@
         <label class="form-label" data-en="Remark / Name" data-fa="نام کاربر">Remark / Name</label>
         <input class="form-input" id="new-label" placeholder="e.g. User 1" data-placeholder-en="e.g. User 1" data-placeholder-fa="مثلاً: کاربر ۱" required>
       </div>
-      <div class="form-group">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <label class="form-label" style="margin-bottom:0" data-en="Domain" data-fa="دامنه">Domain</label>
-          <button type="button" class="btn-link-action" id="btn-add-modal-manage-domains" data-en="+ Manage" data-fa="+ مدیریت">+ Manage</button>
+      <div class="form-row">
+        <div class="form-group" style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <label class="form-label" style="margin-bottom:0" data-en="Domain" data-fa="دامنه">Domain</label>
+            <button type="button" class="btn-link-action" id="btn-add-modal-manage-domains" data-en="+ Manage" data-fa="+ مدیریت">+ Manage</button>
+          </div>
+          <select class="form-select" id="new-domain"></select>
         </div>
-        <select class="form-select" id="new-domain"></select>
+        <div class="form-group" style="flex:1">
+          <label class="form-label" data-en="Group / Category" data-fa="دسته بندی">Group / Category</label>
+          <select class="form-select" id="new-group"></select>
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group" style="flex:1">
@@ -295,6 +448,20 @@
         <div class="form-group" style="min-width:80px;max-width:100px">
           <label class="form-label" data-en="Unit" data-fa="واحد">Unit</label>
           <select class="form-select" id="new-unit"><option value="GB">GB</option><option value="MB">MB</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="flex:1">
+          <label class="form-label" data-en="Speed Limit (Mbps)" data-fa="محدودیت سرعت (Mbps)">Speed Limit (Mbps)</label>
+          <input class="form-input" id="new-speed" type="number" min="0" step="0.5" placeholder="0 = Unlimited" value="0">
+        </div>
+        <div class="form-group" style="flex:1">
+          <label class="form-label" data-en="Max Concurrent IPs" data-fa="سقف دستگاه (آی‌پی همزمان)">Max Concurrent IPs</label>
+          <input class="form-input" id="new-max-ips" type="number" min="0" step="1" placeholder="0 = Unlimited" value="0">
+        </div>
+        <div class="form-group" style="flex:1">
+          <label class="form-label" data-en="Expire (Days)" data-fa="مدت اعتبار (روز)">Expire (Days)</label>
+          <input class="form-input" id="new-days" type="number" min="0" step="1" placeholder="0 = Never" value="0">
         </div>
       </div>
       <button type="submit" class="btn btn-primary" id="btn-create-link" style="width:100%;margin-top:12px;justify-content:center" data-en="Create Inbound" data-fa="ایجاد اینباند">Create Inbound</button>
@@ -313,24 +480,124 @@
         <label class="form-label" data-en="Remark / Name" data-fa="نام کاربر">Remark / Name</label>
         <input class="form-input" id="edit-label" required>
       </div>
-      <div class="form-group">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <label class="form-label" style="margin-bottom:0" data-en="Domain" data-fa="دامنه">Domain</label>
-          <button type="button" class="btn-link-action" id="btn-edit-modal-manage-domains" data-en="+ Manage" data-fa="+ مدیریت">+ Manage</button>
+      <div class="form-row">
+        <div class="form-group" style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <label class="form-label" style="margin-bottom:0" data-en="Domain" data-fa="دامنه">Domain</label>
+            <button type="button" class="btn-link-action" id="btn-edit-modal-manage-domains" data-en="+ Manage" data-fa="+ مدیریت">+ Manage</button>
+          </div>
+          <select class="form-select" id="edit-domain"></select>
         </div>
-        <select class="form-select" id="edit-domain"></select>
+        <div class="form-group" style="flex:1">
+          <label class="form-label" data-en="Group / Category" data-fa="دسته بندی">Group / Category</label>
+          <select class="form-select" id="edit-group"></select>
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group" style="flex:1">
           <label class="form-label" data-en="Traffic Limit (GB)" data-fa="سقف حجم (گیگابایت)">Traffic Limit (GB)</label>
           <input class="form-input" id="edit-limit" type="number" min="0" step="0.1">
         </div>
+        <div class="form-group" style="flex:1">
+          <label class="form-label" data-en="Speed (Mbps)" data-fa="سرعت (Mbps)">Speed (Mbps)</label>
+          <input class="form-input" id="edit-speed" type="number" min="0" step="0.5">
+        </div>
+        <div class="form-group" style="flex:1">
+          <label class="form-label" data-en="Max Devices" data-fa="سقف کاربر">Max Devices</label>
+          <input class="form-input" id="edit-max-ips" type="number" min="0" step="1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-en="Extend / Set Expiration (Days from now)" data-fa="تمدید تاریخ انقضا (روز از الان)">Extend / Set Expiration (Days from now)</label>
+        <input class="form-input" id="edit-days" type="number" min="0" step="1" placeholder="Leave empty to keep current expiration">
       </div>
       <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
         <input type="checkbox" id="edit-reset-usage" style="accent-color:var(--neon-purple)">
         <label for="edit-reset-usage" style="font-size:12px;cursor:pointer" data-en="Reset used traffic to 0" data-fa="صفر کردن حجم مصرفی">Reset used traffic to 0</label>
       </div>
       <button type="submit" class="btn btn-primary" id="btn-save-edit" style="width:100%;margin-top:14px;justify-content:center" data-en="Save Changes" data-fa="ذخیره تغییرات">Save Changes</button>
+    </form>
+  </div>
+</dialog>
+
+<!-- ADD GROUP MODAL -->
+<dialog class="modal-dialog" id="group-modal">
+  <div class="modal-content">
+    <button class="modal-close" id="group-modal-close" aria-label="Close">&#x2715;</button>
+    <div class="modal-title" data-en="Add Group / Category" data-fa="افزودن دسته جدید">Add Group / Category</div>
+    <form id="add-group-form" onsubmit="return false;">
+      <div class="form-group">
+        <label class="form-label" data-en="Group Name" data-fa="نام دسته">Group Name</label>
+        <input class="form-input" id="new-group-name" placeholder="e.g. VIP, Iran, Germany" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-en="Description" data-fa="توضیحات">Description</label>
+        <input class="form-input" id="new-group-desc" placeholder="e.g. High-speed premium nodes">
+      </div>
+      <button type="submit" class="btn btn-primary" id="btn-save-group" style="width:100%;margin-top:10px;justify-content:center">Save Group</button>
+    </form>
+  </div>
+</dialog>
+
+<!-- ADD ANNOUNCEMENT MODAL -->
+<dialog class="modal-dialog" id="announcement-modal">
+  <div class="modal-content">
+    <button class="modal-close" id="announcement-modal-close" aria-label="Close">&#x2715;</button>
+    <div class="modal-title">New Broadcast Announcement</div>
+    <form id="add-announcement-form" onsubmit="return false;">
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input class="form-input" id="new-ann-title" placeholder="e.g. Server Maintenance Notice" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Level</label>
+        <select class="form-select" id="new-ann-level">
+          <option value="info">Info (Blue)</option>
+          <option value="warning">Warning (Yellow)</option>
+          <option value="critical">Critical (Red)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message Content</label>
+        <textarea class="form-input" id="new-ann-content" rows="3" placeholder="Enter message to display on user portal and dashboard" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btn-save-announcement" style="width:100%;margin-top:10px;justify-content:center">Broadcast Announcement</button>
+    </form>
+  </div>
+</dialog>
+
+<!-- ADD ADMIN MODAL -->
+<dialog class="modal-dialog" id="admin-modal">
+  <div class="modal-content">
+    <button class="modal-close" id="admin-modal-close" aria-label="Close">&#x2715;</button>
+    <div class="modal-title">Add Administrator</div>
+    <form id="add-admin-form" onsubmit="return false;">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="new-admin-user" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="new-admin-pw" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="new-admin-role">
+          <option value="admin">Admin</option>
+          <option value="operator">Operator (Read-Only)</option>
+          <option value="superadmin">Superadmin</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Permissions</label>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+          <label><input type="checkbox" id="perm-manage-users" checked> Manage Users & Inbounds</label>
+          <label><input type="checkbox" id="perm-view-stats" checked> View Statistics & Traffic</label>
+          <label><input type="checkbox" id="perm-view-logs" checked> View Audit Logs</label>
+          <label><input type="checkbox" id="perm-manage-admins"> Manage Administrators</label>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btn-save-admin" style="width:100%;margin-top:10px;justify-content:center">Create Administrator</button>
     </form>
   </div>
 </dialog>
@@ -456,9 +723,15 @@
   <tr>
     <td class="col-id" style="color:var(--text3);font-size:11px;font-weight:700"></td>
     <td>
-      <div class="col-name" style="font-weight:700;font-size:13px"></div>
-      <div class="col-domain-box" style="margin-top:3px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span class="col-name" style="font-weight:700;font-size:13px"></span>
+        <span class="col-group-pill badge-group"></span>
+      </div>
+      <div class="col-meta-badges" style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap">
         <span class="col-domain-pill tag-domain"></span>
+        <span class="col-speed-pill badge-limit" style="display:none"></span>
+        <span class="col-ips-pill badge-limit" style="display:none"></span>
+        <span class="col-expire-pill badge-limit" style="display:none"></span>
       </div>
     </td>
     <td><span class="tag tag-vless">VLESS</span></td>
@@ -471,8 +744,9 @@
     </td>
     <td><span class="col-status tag"></span></td>
     <td style="text-align:right">
-      <div style="display:inline-flex;gap:4px;align-items:center;justify-content:flex-end">
+      <div style="display:inline-flex;gap:4px;align-items:center;justify-content:flex-end;flex-wrap:wrap">
         <button class="act-toggle toggle" title="Toggle Active"></button>
+        <button class="act-portal portal-btn" title="Client Portal" data-en="Portal" data-fa="پورتال">Portal</button>
         <button class="act-copy btn-copy" title="Copy Link" data-en="Copy" data-fa="کپی">Copy</button>
         <button class="act-qr btn-qr" title="QR Code" data-en="QR" data-fa="بارکد">QR</button>
         <button class="act-topup btn-topup" title="+1 GB Top-Up" data-en="+1G" data-fa="+۱گ">+1G</button>
@@ -490,10 +764,16 @@
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <span class="col-id inbound-card-id"></span>
         <span class="col-name inbound-card-name"></span>
+        <span class="col-group-pill badge-group"></span>
         <span class="tag tag-vless">VLESS</span>
-        <span class="col-domain-pill tag-domain"></span>
       </div>
       <button class="act-toggle toggle" title="Toggle Active"></button>
+    </div>
+    <div class="col-meta-badges" style="display:flex;gap:4px;flex-wrap:wrap">
+      <span class="col-domain-pill tag-domain"></span>
+      <span class="col-speed-pill badge-limit" style="display:none"></span>
+      <span class="col-ips-pill badge-limit" style="display:none"></span>
+      <span class="col-expire-pill badge-limit" style="display:none"></span>
     </div>
     <div class="usage-pill">
       <span class="col-used used bidi-safe"><bdi></bdi></span>
@@ -501,6 +781,7 @@
       <span class="col-limit limit bidi-safe"><bdi></bdi></span>
     </div>
     <div class="inbound-card-actions">
+      <button class="act-portal portal-btn" data-en="Portal" data-fa="پورتال">Portal</button>
       <button class="act-copy btn-copy" data-en="Copy" data-fa="کپی">Copy</button>
       <button class="act-qr btn-qr" data-en="QR" data-fa="بارکد">QR</button>
       <button class="act-topup btn-topup" data-en="+1 GB" data-fa="+ ۱ گیگ">+1 GB</button>
@@ -511,6 +792,6 @@
   </div>
 </template>
 
-<script src="/static/app.js?v=2.2"></script>
+<script src="/static/app.js?v=3.0"></script>
 </body>
 </html>
